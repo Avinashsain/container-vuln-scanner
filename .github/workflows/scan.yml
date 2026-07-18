@@ -1,6 +1,5 @@
 name: Container Security Scan
 
-# When to run: every push to main, and every pull request
 on:
   push:
     branches: [ main ]
@@ -10,25 +9,39 @@ jobs:
   build-and-scan:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Download your repo code onto the runner
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Build the Docker image
       - name: Build image
         run: docker build -t myapp:${{ github.sha }} .
 
-      # Step 3: Scan with Trivy (official action)
-      - name: Run Trivy scanner
+      # Step A: Table log mein dikhao (kabhi fail nahi hota)
+      - name: Show vulnerabilities (table)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: myapp:${{ github.sha }}
+          format: table
+          exit-code: 0
+          severity: HIGH,CRITICAL
+
+      # Step B: JSON report save karo
+      - name: Generate JSON report
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: myapp:${{ github.sha }}
           format: json
           output: scan-report.json
-          exit-code: 1                 # fail the job on findings
-          severity: HIGH,CRITICAL      # ...at these levels
+          exit-code: 0
 
-      # Step 4: Save the report even if the scan failed
+      # Step C: SECURITY GATE - yahi pass/fail decide karta hai
+      - name: Security gate
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: myapp:${{ github.sha }}
+          exit-code: 1
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true    # jinka fix hi nahi nikla, unpe block mat karo
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
