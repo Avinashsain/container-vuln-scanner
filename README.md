@@ -34,6 +34,23 @@ An automated security tool that scans Docker container images for known vulnerab
 
 **Flow:** Developer code push karta hai → CI/CD image build karti hai → Trivy scan karta hai → HIGH/CRITICAL vulnerabilities milne par build **block** ho jati hai → pass hone par reports bante hain, Slack alert jata hai, aur metrics Grafana dashboard par push hoti hain.
 
+### Monitoring Data Flow — Why Pushgateway?
+
+```
+push_metrics.py ──PUSH──▶ Pushgateway ◀──PULL (every 15s)── Prometheus ◀──query── Grafana
+ (runs & exits)           (holds data)                      (time-series DB)      (dashboard)
+```
+
+Prometheus works on a **pull model** — it visits long-running servers every 15 seconds to collect metrics. Our scan scripts, however, are **short-lived**: they run, push results, and exit. By the time Prometheus comes to pull, the script is already gone.
+
+**Pushgateway solves this:** the scan script *pushes* metrics to Pushgateway (`localhost:9091`), which holds them until Prometheus pulls on its normal schedule. Each scanned image gets its own metric group, identified by the `image` label — this is also what powers the per-image filter dropdown in Grafana.
+
+The Pushgateway UI (http://localhost:9091) doubles as a debugging checkpoint: if Grafana shows "No data", checking whether the metric exists here immediately tells you which half of the pipeline broke (script → Pushgateway, or Pushgateway → Prometheus → Grafana). Stale groups from removed images can be cleaned with **Delete Group**.
+
+> **Known trade-off:** Pushgateway never expires metrics on its own — the last pushed value persists until manually deleted. This is acceptable for batch-style scan jobs (its intended use case), but is why Pushgateway isn't used for regular always-on services.
+
+📸 **[SCREENSHOT 20: Pushgateway UI (localhost:9091) — image groups aur container_vulnerabilities values dikhte hue]**
+
 ## Key Features
 
 | Feature | Description |

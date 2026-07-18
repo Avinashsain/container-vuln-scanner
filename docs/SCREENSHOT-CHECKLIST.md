@@ -8,6 +8,7 @@ Documentation mein 19 screenshot placeholders hain. Har screenshot kaise lena ha
 |---|---|---|
 | 1 | Grafana dashboard full view | http://localhost:3000 → dashboard kholo → saare 7 panels dikhne chahiye. Pehle `./scripts/generate_trend_data.sh` chala lo taaki graphs bhare hue hon |
 | 2 | run_all_tests.sh final summary | Terminal mein `./scripts/run_all_tests.sh` chalao → end mein FINAL SUMMARY (PASS/FAIL list) dikhe |
+| 20 | Pushgateway UI | http://localhost:9091 kholo → image groups + `container_vulnerabilities` values (aap ye already le chuke ho! ✅) |
 
 ## docs/setup.md (4 screenshots)
 
