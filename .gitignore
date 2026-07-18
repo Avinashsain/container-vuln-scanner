@@ -1,0 +1,16 @@
+# Scan reports - ye local rahenge, repo mein nahi
+reports/*.json
+reports/*.html
+reports/*.pdf
+
+# Secrets - kabhi commit mat karna
+*.env.local
+secrets/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS junk files
+.DS_Store
+Thumbs.db
