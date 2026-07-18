@@ -1,0 +1,6 @@
+# Accepted by security team on 2026-07-10, review by 2026-10-01
+# Reason: vulnerable function not reachable in our code
+CVE-2023-12345
+
+# No vendor fix available yet — tracking in ticket SEC-42
+CVE-2024-67890

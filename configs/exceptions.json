@@ -1,0 +1,8 @@
+[
+  {
+    "cve": "CVE-2023-12345",
+    "reason": "Function not reachable",
+    "approved_by": "security-team",
+    "expires": "2026-10-01"
+  }
+]
