@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "myapp:${BUILD_NUMBER}"   // unique tag per build
+        IMAGE_NAME    = "myapp:${BUILD_NUMBER}"
         FAIL_SEVERITY = "HIGH,CRITICAL"
     }
 
@@ -13,20 +13,30 @@ pipeline {
             }
         }
 
-        stage('Security Scan') {
+        stage('Show Vulnerabilities') {
             steps {
-                // Save full report as a build artifact
-                sh 'trivy image --format json --output scan-report.json $IMAGE_NAME'
-                archiveArtifacts artifacts: 'scan-report.json'
+                // exit-code 0 → never fails; full table in Console Output
+                sh 'trivy image --exit-code 0 --severity $FAIL_SEVERITY $IMAGE_NAME'
+            }
+        }
 
-                // The gate: fail build on HIGH/CRITICAL
+        stage('Save Reports') {
+            steps {
+                sh 'trivy image --format json --output scan-report.json $IMAGE_NAME'
+                sh 'python3 scripts/generate_report.py scan-report.json scan-report.html'
+                archiveArtifacts artifacts: 'scan-report.json, scan-report.html'
+            }
+        }
+
+        stage('Security Gate') {
+            steps {
                 sh 'trivy image --exit-code 1 --severity $FAIL_SEVERITY $IMAGE_NAME'
             }
         }
 
         stage('Push to Registry') {
             steps {
-                echo '✅ Scan passed — image is safe. (Push step would go here)'
+                echo '✅ Scan passed — image is safe.'
             }
         }
     }
@@ -34,6 +44,9 @@ pipeline {
     post {
         failure {
             echo '🚨 Build blocked: vulnerabilities exceed the allowed threshold!'
+        }
+        always {
+            archiveArtifacts artifacts: 'scan-report.*', allowEmptyArchive: true
         }
     }
 }
