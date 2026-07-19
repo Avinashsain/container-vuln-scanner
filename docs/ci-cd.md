@@ -106,6 +106,7 @@ pipeline {
     agent any
 
     environment {
+        PATH          = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
         IMAGE_NAME    = "myapp:${BUILD_NUMBER}"
         FAIL_SEVERITY = "HIGH,CRITICAL"
     }
@@ -134,7 +135,7 @@ pipeline {
 
         stage('Security Gate') {
             steps {
-                sh 'trivy image --exit-code 1 --severity $FAIL_SEVERITY $IMAGE_NAME'
+                sh 'trivy image --exit-code 1 --severity $FAIL_SEVERITY --ignore-unfixed $IMAGE_NAME'
             }
         }
 
