@@ -4,8 +4,8 @@ An automated security tool that scans Docker container images for known vulnerab
 
 > **Problem it solves:** DevOps teams often deploy container images without security checks, allowing known vulnerabilities to reach production. This tool ensures **only secure images are deployed** by integrating automated scanning directly into the build pipeline.
 
-📸 **[SCREENSHOT 1: Grafana dashboard full view — saare 7 panels ke saath]**
-
+![Grafana dashboard](./docs/images/01-grafana-dashboard.png)
+![Grafana dashboard](./docs/images/02-grafana-dashboard.png)
 ---
 
 ## Architecture
@@ -49,7 +49,7 @@ The Pushgateway UI (http://localhost:9091) doubles as a debugging checkpoint: if
 
 > **Known trade-off:** Pushgateway never expires metrics on its own — the last pushed value persists until manually deleted. This is acceptable for batch-style scan jobs (its intended use case), but is why Pushgateway isn't used for regular always-on services.
 
-📸 **[SCREENSHOT 20: Pushgateway UI (localhost:9091) — image groups aur container_vulnerabilities values dikhte hue]**
+![Pushgateway UI](./docs/images/pushgateway-ui.png)
 
 ## Key Features
 
@@ -68,7 +68,7 @@ The Pushgateway UI (http://localhost:9091) doubles as a debugging checkpoint: if
 ## Quick Start (3 commands)
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/container-vuln-scanner.git
+git clone https://github.com/Avinashsain/container-vuln-scanner.git
 cd container-vuln-scanner
 ./setup.sh
 ```
@@ -119,7 +119,7 @@ This scanner was validated against **11 real images**, including microservices f
 - ✅ Streaming App (5 microservices: admin, auth, chat, frontend, streaming)
 - ✅ Deliberately vulnerable image (`python:3.4-alpine`) to prove the gate blocks correctly
 
-📸 **[SCREENSHOT 2: run_all_tests.sh ka FINAL SUMMARY output — PASS/FAIL list ke saath]**
+![FINAL SUMMARY output](./docs/images/run_all_tests.png)
 
 ## Documentation
 
