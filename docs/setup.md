@@ -34,7 +34,7 @@ docker --version
 docker run hello-world
 ```
 
-📸 **[SCREENSHOT 3: `docker run hello-world` ka successful output]**
+![Docker Run Hello World](./images/docker-run-hello-world.png)
 
 ---
 
@@ -99,7 +99,7 @@ docker compose up -d
 docker compose ps    # all 3 services should show "Up"
 ```
 
-📸 **[SCREENSHOT 4: `docker compose ps` output — teeno containers Up dikhte hue]**
+![Docker Containers](./images/docker-compose-ps.png)
 
 | Service | URL | Purpose |
 |---|---|---|
@@ -155,11 +155,11 @@ source ~/.zshrc
 **Test it before using:**
 ```bash
 curl -s -X POST -H "Content-Type: application/json" \
-  -d '{"text": "🧪 test"}' "$SLACK_WEBHOOK_URL"
+  -d '{"text": "🧪 Test message from vuln scanner"}' "$SLACK_WEBHOOK_URL"
 # Expected response: ok
 ```
 
-📸 **[SCREENSHOT 5: Slack channel mein aaya hua test/alert message]**
+![Slack test/alert message](./images/slack-messages.png)
 
 ---
 
@@ -178,4 +178,4 @@ This script:
 4. Starts the monitoring stack (`docker compose up -d`)
 5. Runs a smoke-test scan on `alpine:latest` and pushes metrics
 
-📸 **[SCREENSHOT 6: setup.sh ka pura output — "🎉 Setup complete!" tak]**
+![One-Command Setup](./images/one-command-setup.png)
