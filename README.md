@@ -140,6 +140,7 @@ This scanner was validated against **11 real images**, including microservices f
 | [docs/setup.md](docs/setup.md) | Installation for macOS/Linux/Windows |
 | [docs/usage.md](docs/usage.md) | Scanning, reports, thresholds, exceptions |
 | [docs/ci-cd.md](docs/ci-cd.md) | Jenkins & GitHub Actions integration (incl. webhook setup) |
+| [docs/aws-deployment.md](docs/aws-deployment.md) | Cloud deployment on AWS EC2 (Free Tier) |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Real errors faced & their fixes |
 
 ## Cost Optimization
