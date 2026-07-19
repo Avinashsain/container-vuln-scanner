@@ -165,10 +165,11 @@ pipeline {
 5. Script Path: `ci/Jenkinsfile`
 6. Save → **Build Now**
 
-📸 **[SCREENSHOT 16: Jenkins job configuration page — SCM settings ke saath]**
-📸 **[SCREENSHOT 17: Stage View — Security Gate stage red (blocked build)]**
+![Jenkins job configuration page](./images/jenkins-job-configuration.png)
+![Stage View — Security Gate stage red (blocked build)](./images/jinkins-security-gate-stage-red.png)
 📸 **[SCREENSHOT 18: Build page Artifacts section — scan-report.json + scan-report.html]**
-📸 **[SCREENSHOT 19: Console Output — Trivy ki vulnerability table]**
+![Build page Artifacts section — scan-report.json + scan-report.html](./images/jenkins-last-successful-artifacts.png)
+![Trivy Console Output](./images/jenkins-trivy-console-output.png)
 
 ### Auto-trigger on push (localhost limitation + solution)
 
