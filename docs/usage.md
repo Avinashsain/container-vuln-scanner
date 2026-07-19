@@ -30,8 +30,13 @@ Check the result:
 # exit=0 → PASSED
 ```
 
-📸 **[SCREENSHOT 7: Ek FAIL scan ka terminal output (python:3.4-alpine) — vulnerability table dikhti hui]**
-📸 **[SCREENSHOT 8: Ek PASS scan ka output (alpine:latest) — "✅ Image passed the security gate!"]**
+![Vulnerability Table Terminal Output](./images/vulnerability-table-1.png)
+![Vulnerability Table Terminal Output](./images/vulnerability-table-2.png)
+![Vulnerability Table Terminal Output](./images/vulnerability-table-3.png)
+
+![Vulnerability (alpine:latest)](./images/vulnerability%20-alpine-latest.png)
+
+> **Demo tip — same family, different version:** `python:3.4-alpine` (2015-era) FAILS the gate while `python:alpine` (latest) PASSES it. Same base family, only the version differs — a clean demonstration that keeping base images updated is the primary vulnerability fix. Alpine bases also help: with only ~20-30 packages (vs 87 in debian-slim), the attack surface is minimal.
 
 ### Understanding scan output columns
 
@@ -80,7 +85,9 @@ python3 scripts/generate_report.py reports/scan.json reports/scan.html
 ```
 Open the HTML file in any browser. Features: severity badge counts, color-coded rows, clickable CVE links to the NVD database.
 
-📸 **[SCREENSHOT 9: Browser mein khuli HTML report — color badges aur table ke saath]**
+![Container Vulnerability Report Python:3.4 alpine](./images/container-vulnerability-report-python-3.4-alpine.png)
+
+![Container Vulnerability Report Python:alpine](./images/container-vulnerability-report-python-alpine.png)
 
 ### Quick terminal summary
 ```bash
@@ -134,8 +141,8 @@ python3 scripts/push_metrics.py reports/scan.json
 ./scripts/generate_trend_data.sh   # 10 rounds × all images, 60s apart
 ```
 
-📸 **[SCREENSHOT 10: Dashboard with image dropdown open — saari images listed]**
-📸 **[SCREENSHOT 11: Time series panel with actual trend lines (multiple data points)]**
+![Dashboard with image dropdown open](./images/image-dropdown.png)
+![Time series panel with actual trend lines](./images/actual-trend-lines.png)
 
 ---
 
