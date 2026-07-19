@@ -81,10 +81,10 @@ We proved the complete DevSecOps cycle with two builds:
 
 **The fix was a one-line Dockerfile change** — this demonstrates the intended workflow: vulnerable image blocked → developer remediates (base upgrade) → gate passes → deployment proceeds.
 
-📸 **[SCREENSHOT 12: Actions tab — red build aur green build dono history mein dikhte hue]**
-📸 **[SCREENSHOT 13: Red build ke andar "Run Trivy scanner" step ka log — "Error: Process completed with exit code 1"]**
-📸 **[SCREENSHOT 14: Green build — saare steps ✅ ke saath]**
-📸 **[SCREENSHOT 15: Workflow run page ka Artifacts section — vulnerability-report downloadable]**
+![Actions tab — red build aur green build](./images/action-tab-red-green-build.png)
+![Run Trivy scanner](./images/git-run-trivy-scanner.png)
+![Green build](./images/green-build.png)
+![Artifacts section — vulnerability-report downloadable](./images/artifacts-section.png)
 
 ### Cost optimization in Actions
 - Trivy binary is **cached** between runs (`Cache restored successfully` in logs) — saves download time and CI minutes
