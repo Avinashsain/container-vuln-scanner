@@ -1,11 +1,22 @@
 # 🛡️ Container Image Vulnerability Scanner with Reporting
 
+![Security Scan](https://github.com/Avinashsain/container-vuln-scanner/actions/workflows/scan.yml/badge.svg)
+
 An automated security tool that scans Docker container images for known vulnerabilities (CVEs), blocks insecure images in CI/CD pipelines, sends real-time Slack alerts, and tracks vulnerability trends on a Grafana dashboard.
 
 > **Problem it solves:** DevOps teams often deploy container images without security checks, allowing known vulnerabilities to reach production. This tool ensures **only secure images are deployed** by integrating automated scanning directly into the build pipeline.
 
 ![Grafana dashboard](./docs/images/01-grafana-dashboard.png)
 ![Grafana dashboard](./docs/images/02-grafana-dashboard.png)
+
+## Results at a Glance
+
+- 🔴→🟢 **[Red build blocked, fixed via base upgrade, then green](docs/images/action-tab-red-green-build.png)** — the full DevSecOps cycle demonstrated in GitHub Actions
+- 🚦 **[Jenkins Security Gate blocking a vulnerable image](docs/images/jinkins-security-gate-stage-red.png)** — push-triggered builds via GitHub webhook (ngrok tunnel)
+- 📊 **[Live Grafana dashboard](docs/images/01-grafana-dashboard.png)** tracking 11 real images with per-image filters and trend lines
+- 💬 **[Color-coded Slack alerts](docs/images/slack-messages.png)** on every scan
+- 🧪 **[End-to-end test suite summary](docs/images/run_all_tests.png)** — PASS/FAIL verdict for every image
+
 ---
 
 ## Architecture
@@ -32,7 +43,7 @@ An automated security tool that scans Docker container images for known vulnerab
                                                      └──────────────┘
 ```
 
-**Flow:** Developer code push karta hai → CI/CD image build karti hai → Trivy scan karta hai → HIGH/CRITICAL vulnerabilities milne par build **block** ho jati hai → pass hone par reports bante hain, Slack alert jata hai, aur metrics Grafana dashboard par push hoti hain.
+**Flow:** A developer pushes code → CI/CD builds the image → Trivy scans it → builds with fixable HIGH/CRITICAL findings are **blocked** → passing builds generate reports, fire a Slack alert, and push metrics to the Grafana dashboard. Jenkins builds are push-triggered through a GitHub webhook (ngrok tunnel); GitHub Actions triggers natively on push.
 
 ### Monitoring Data Flow — Why Pushgateway?
 
@@ -56,7 +67,8 @@ The Pushgateway UI (http://localhost:9091) doubles as a debugging checkpoint: if
 | Feature | Description |
 |---|---|
 | 🔍 Automated Scanning | Trivy-based CVE scanning of any Docker image |
-| 🚦 Security Gate | Builds fail automatically on HIGH/CRITICAL vulnerabilities |
+| 🚦 Security Gate | Builds fail automatically on fixable HIGH/CRITICAL vulnerabilities |
+| ⚡ Push-Triggered CI | GitHub Actions natively + Jenkins via GitHub webhook (ngrok) |
 | ⚙️ Configurable Thresholds | Severity levels controlled via `configs/scanner-config.env` |
 | 📄 Report Generation | Styled HTML + machine-readable JSON reports |
 | 💬 Slack Notifications | Color-coded alerts (🔴 critical / 🟠 high / 🟢 clean) |
@@ -127,7 +139,7 @@ This scanner was validated against **11 real images**, including microservices f
 |---|---|
 | [docs/setup.md](docs/setup.md) | Installation for macOS/Linux/Windows |
 | [docs/usage.md](docs/usage.md) | Scanning, reports, thresholds, exceptions |
-| [docs/ci-cd.md](docs/ci-cd.md) | Jenkins & GitHub Actions integration |
+| [docs/ci-cd.md](docs/ci-cd.md) | Jenkins & GitHub Actions integration (incl. webhook setup) |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Real errors faced & their fixes |
 
 ## Cost Optimization
@@ -142,4 +154,4 @@ This scanner was validated against **11 real images**, including microservices f
 
 ## Tech Stack
 
-Trivy · Docker · Python 3 · Bash · Jenkins · GitHub Actions · Prometheus · Pushgateway · Grafana · Slack API
+Trivy · Docker · Python 3 · Bash · Jenkins · GitHub Actions · Prometheus · Pushgateway · Grafana · Slack API · ngrok

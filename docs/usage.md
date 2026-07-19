@@ -34,7 +34,7 @@ Check the result:
 ![Vulnerability Table Terminal Output](./images/vulnerability-table-2.png)
 ![Vulnerability Table Terminal Output](./images/vulnerability-table-3.png)
 
-![Vulnerability (alpine:latest)](./images/vulnerability%20-alpine-latest.png)
+![Vulnerability (alpine:latest)](./images/vulnerability-alpine-latest.png)
 
 > **Demo tip — same family, different version:** `python:3.4-alpine` (2015-era) FAILS the gate while `python:alpine` (latest) PASSES it. Same base family, only the version differs — a clean demonstration that keeping base images updated is the primary vulnerability fix. Alpine bases also help: with only ~20-30 packages (vs 87 in debian-slim), the attack surface is minimal.
 

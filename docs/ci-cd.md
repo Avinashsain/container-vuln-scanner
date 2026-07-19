@@ -99,6 +99,8 @@ We proved the complete DevSecOps cycle with two builds:
 - Plugins: **Pipeline** + **Git** (from suggested plugins) — optionally **HTML Publisher**
 - Jenkins can execute `docker` and `trivy` (verified via a test Freestyle job)
 
+> **macOS PATH note:** when Jenkins runs as a background service, its PATH excludes Homebrew and `/usr/local/bin` — so `docker`, `trivy`, and `python3` are "not found" even though they work in your terminal. Fixed by prepending them to PATH in the Jenkinsfile `environment` block (see below). This was a real issue we debugged — details in [troubleshooting.md](troubleshooting.md).
+
 ### Pipeline file: `ci/Jenkinsfile`
 
 ```groovy
@@ -157,6 +159,8 @@ pipeline {
 }
 ```
 
+> **Gate policy:** both CI systems use the same rule — block only **fixable** HIGH/CRITICAL vulnerabilities (`--ignore-unfixed`). Unfixed CVEs (no vendor patch released yet, e.g. `fix_deferred` status) still appear in the report table and artifacts for tracking, but don't block the build — there is nothing actionable for the developer. This mirrors real-world security team policy.
+
 ### Job setup steps
 
 1. **New Item** → name: `container-vuln-scanner` → type: **Pipeline** → OK
@@ -168,17 +172,31 @@ pipeline {
 
 ![Jenkins job configuration page](./images/jenkins-job-configuration.png)
 ![Stage View — Security Gate stage red (blocked build)](./images/jinkins-security-gate-stage-red.png)
-📸 **[SCREENSHOT 18: Build page Artifacts section — scan-report.json + scan-report.html]**
 ![Build page Artifacts section — scan-report.json + scan-report.html](./images/jenkins-last-successful-artifacts.png)
 ![Trivy Console Output](./images/jenkins-trivy-console-output.png)
 
-### Auto-trigger on push (localhost limitation + solution)
+### Auto-trigger on push: GitHub Webhook via ngrok
 
-GitHub webhooks cannot reach a localhost Jenkins. Solution: **SCM Polling** —
+GitHub webhooks cannot reach `localhost:8080` directly — GitHub's servers have no route to a private machine. We solved this by exposing Jenkins through an **ngrok tunnel**, enabling true push-triggered builds (no polling delay):
 
-Job → Configure → Build Triggers → ✅ **Poll SCM** → Schedule: `H/5 * * * *`
+**1. Start the ngrok tunnel:**
+```bash
+ngrok http 8080
+# gives a public URL like: https://<random-name>.ngrok-free.dev → localhost:8080
+```
 
-Jenkins checks the repo every 5 minutes and builds automatically on new commits — same effect as a webhook.
+**2. Jenkins side:** Job → Configure → **Triggers** → ✅ **GitHub hook trigger for GITScm polling**
+
+**3. GitHub side:** repo → **Settings → Webhooks → Add webhook**
+- Payload URL: `https://<random-name>.ngrok-free.dev/github-webhook/` — ⚠️ the **trailing slash is required**
+- Content type: `application/json`
+- Events: *Just the push event*
+
+**4. Verify:** GitHub sends a ping on save — a green ✓ appears next to the webhook (check *Recent Deliveries* if red ✗). On the Jenkins side, incoming hooks are visible under the job's **GitHub Hook Log**.
+
+Now every `git push` triggers a Jenkins build within seconds — the build log shows it was started by the push rather than a user.
+
+> **ngrok free-tier caveat:** the public URL changes every time ngrok restarts, so the GitHub webhook's Payload URL must be updated after a restart. For always-on setups without ngrok, **Poll SCM** (`H/5 * * * *`) is the fallback — Jenkins checks the repo every 5 minutes instead.
 
 ### "Pipeline as Code" benefit
 
@@ -192,9 +210,9 @@ The Jenkinsfile lives in Git (`ci/Jenkinsfile`), so pipeline changes are version
 |---|---|---|
 | Runs on | GitHub's cloud servers | Local machine |
 | Setup effort | One YAML file | Server + job configuration |
-| Trigger | Instant on push (webhook) | SCM polling (5 min) on localhost |
+| Trigger | Instant on push (webhook) | Instant on push (webhook via ngrok tunnel) |
 | Trivy install | Official action handles it (cached) | Installed once on host |
 | Cost | Free (public repo) | Free (own hardware) |
 | Grafana metrics push | ❌ can't reach localhost Pushgateway | ✅ direct access |
 
-**Architecture note (viva point):** CI gates run in the cloud, while monitoring lives on localhost. In production, the Pushgateway would be hosted on a reachable server so cloud CI could also push metrics — the code requires no changes, only the `PUSHGATEWAY` URL.
+**Architecture note (viva point):** CI gates run in the cloud, while monitoring lives on localhost. In production, the Pushgateway would be hosted on a reachable server so cloud CI could also push metrics — the code requires no changes, only the `PUSHGATEWAY` URL. The same principle applies to the ngrok tunnel: in production, Jenkins would sit on a server with a stable public/internal URL, and the webhook would point there permanently.
