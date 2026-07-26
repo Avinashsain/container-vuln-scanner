@@ -1,3 +1,6 @@
+# Note: the top-level `version:` key is deprecated in the current Compose
+# Specification and is ignored (with a warning) by Compose v2 — dropped it.
+
 services:
 
   # ── MongoDB ──────────────────────────────────
@@ -6,15 +9,25 @@ services:
     container_name: mongodb
     restart: unless-stopped
     environment:
+      # Added root credentials — the original had none, meaning anyone who
+      # could reach this container had full unauthenticated DB access.
+      # Values come from a local .env file (see note below), not hardcoded.
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: userdb
-    ports:
-      - "27017:27017"
+    # Removed `ports: "27017:27017"`. The backend already reaches Mongo via
+    # the internal app-network using the service name (mongodb:27017), so
+    # publishing this to the host was unnecessary attack surface — anyone
+    # who could reach the host on 27017 could hit the database directly.
     volumes:
       - mongo_data:/data/db
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      # Updated to authenticate the ping using the same root credentials,
+      # since auth is now enabled and the old unauthenticated ping would
+      # start failing once credentials are required.
+      test: ["CMD", "mongosh", "-u", "${MONGO_ROOT_USER}", "-p", "${MONGO_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -24,12 +37,13 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.vulnerabilities-fixed
     container_name: backend
     restart: unless-stopped
     environment:
       PORT: 9000
-      MONGO_URI: mongodb://mongodb:27017/userdb
+      # Updated to include the auth credentials now required by mongodb above.
+      MONGO_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/userdb?authSource=admin
     ports:
       - "9000:9000"
     depends_on:
@@ -48,7 +62,7 @@ services:
   frontend-blue:
     build:
       context: ./frontend-blue
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.vulnerabilities-fixed
     container_name: frontend-blue
     restart: unless-stopped
     environment:
@@ -72,7 +86,7 @@ services:
   frontend-green:
     build:
       context: ./frontend-green
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.vulnerabilities-fixed
     container_name: frontend-green
     restart: unless-stopped
     environment:
