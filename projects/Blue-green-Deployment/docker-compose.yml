@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+
+  # ── MongoDB ──────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: userdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # ── Backend API ───────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    environment:
+      PORT: 9000
+      MONGO_URI: mongodb://mongodb:27017/userdb
+    ports:
+      - "9000:9000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9000/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ── Blue Frontend (Basic UI) ──────────────────
+  frontend-blue:
+    build:
+      context: ./frontend-blue
+      dockerfile: Dockerfile
+    container_name: frontend-blue
+    restart: unless-stopped
+    environment:
+      PORT: 3100
+      BACKEND_URL: http://backend:9000
+    ports:
+      - "3100:3100"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3100/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ── Green Frontend (Enhanced UI) ─────────────
+  frontend-green:
+    build:
+      context: ./frontend-green
+      dockerfile: Dockerfile
+    container_name: frontend-green
+    restart: unless-stopped
+    environment:
+      PORT: 3200
+      BACKEND_URL: http://backend:9000
+    ports:
+      - "3200:3200"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3200/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# ─────────────────────────────────────────────
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

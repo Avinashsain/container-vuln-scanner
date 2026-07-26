@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "d39078e9-fcdc-4266-bc31-6a1c5c4eea32",
+    "name": "Blue-green-Deploymen",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "10633912"
+  },
+  "item": [
+    {
+      "name": "frontend-blue",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3100/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3100",
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "frontend-green",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3100/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3100",
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "backend",
+      "item": [
+        {
+          "name": "save",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Avinash\",\n    \"surname\": \"Sain\",\n    \"dob\": \"1990-10-20\",\n    \"job\": \"QA\",\n    \"place\": \"Jaipur\",\n    \"interests\": [\n        \"AWS\",\n        \"PHP\",\n        \"AI\"\n    ],\n    \"knownLanguages\": [\n        \"Hindi\",\n        \"English\"\n    ],\n    \"registeredFrom\": \"enhanced\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9000/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9000",
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9000/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9000",
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
