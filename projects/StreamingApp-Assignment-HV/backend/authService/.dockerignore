@@ -1,6 +1,8 @@
+.env
+.env.*
+!.env.example
 node_modules
 npm-debug.log
-.env
-*.log
-coverage
-logs
+.git
+.gitignore
+*.md
