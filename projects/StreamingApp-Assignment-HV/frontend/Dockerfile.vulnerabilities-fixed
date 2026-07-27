@@ -1,0 +1,37 @@
+FROM node:18-alpine AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+ARG REACT_APP_AUTH_API_URL
+ARG REACT_APP_STREAMING_API_URL
+ARG REACT_APP_STREAMING_PUBLIC_URL
+ARG REACT_APP_ADMIN_API_URL
+ARG REACT_APP_CHAT_API_URL
+ARG REACT_APP_CHAT_SOCKET_URL
+
+ENV REACT_APP_AUTH_API_URL=${REACT_APP_AUTH_API_URL}
+ENV REACT_APP_STREAMING_API_URL=${REACT_APP_STREAMING_API_URL}
+ENV REACT_APP_STREAMING_PUBLIC_URL=${REACT_APP_STREAMING_PUBLIC_URL}
+ENV REACT_APP_ADMIN_API_URL=${REACT_APP_ADMIN_API_URL}
+ENV REACT_APP_CHAT_API_URL=${REACT_APP_CHAT_API_URL}
+ENV REACT_APP_CHAT_SOCKET_URL=${REACT_APP_CHAT_SOCKET_URL}
+
+RUN npm run build
+
+FROM nginx:1.27-alpine AS production
+
+# All 37 findings (c-ares, libcrypto3/libssl3 CRITICAL, libexpat, libpng,
+# libxml2, musl, nghttp2-libs, zlib) are OS packages in THIS stage — the
+# one actually shipped. The build stage's packages never reach production
+# since only `COPY --from=build /app/build` crosses the stage boundary, so
+# patching there would have done nothing for the final image.
+RUN apk update && apk upgrade --no-cache
+
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
