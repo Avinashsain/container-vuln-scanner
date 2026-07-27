@@ -1,0 +1,531 @@
+    7  aws configure
+    8  aws sts get-caller-identity\n
+   18  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"green"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3200,"nodePort":30080}]}}'
+   19  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"blue"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3100,"nodePort":30080}]}}'
+   20  kubectl get svc frontend-active -n blue-green \\n  -o jsonpath='{.spec.selector.version}'
+   21  kubectl rollout status deployment/frontend-green -n blue-green\n
+   24  kubectl logs -n blue-green -l version=green -f --tail=50\n
+   33  kubectl port-forward svc/backend -n blue-green 9000:9000\n
+   91  docker image prune\n
+   92  docker image prune -a\n
+   93  docker image prune -a --filter "until=48h"\n
+   94  docker container prune\n
+   95  docker container prune --filter "until=24h"\n
+   96  docker volume prune\n
+   97  docker volume prune -a\n
+   98  docker network prune\n
+   99  docker builder prune -af\n
+  100  docker system prune\n
+  101  docker system prune -a\n
+  102  docker system df\n
+  103  aws sts get-caller-identity   # no --profile flag needed\n
+  104  aws sts get-caller-identity
+  105  aws configure list-profiles\n
+  108  aws configure list-profiles\n
+  109  aws configure list-profiles\n
+  110  aws configure\n
+  111  aws configure\n
+  112  aws configure list-profiles\n
+  113  docker system prune -a\n
+  114  docker container prune\n
+  115  docker system prune -a\n
+  116  docker builder prune -af\n
+  121  aws configure
+  124  docker ps
+  129  docker compose up --build -d\n
+  135  docker compose up --build -d\n
+  140  docker compose up --build -d\n
+  141  docker compose down
+  142  docker compose up --build -d\n
+  143  docker compose down
+  144  docker compose up -d
+  145  docker compose down
+  146  docker compose down
+  147  docker compose up -d
+  148  docker compose down
+  149  docker compose up --build -d\n
+  150  docker-compose logs authservice\n
+  151  docker ps a
+  152  docker ps -a
+  153  docker compose down
+  158  docker images
+  159  docker compose up -d
+  160  docker images
+  161  docker tag streamingapp-assignment-hv-admin:latest avinashsain65/admin-service:latest
+  162  docker images
+  163  docker login
+  164  docker push avinashsain65/admin-service:latest
+  165  docker images
+  166  docker tag streamingapp-assignment-hv-auth:latest avinashsain65/auth-service:latest
+  167  docker push avinashsain65/auth-service:latest
+  168  docker push avinashsain65/auth-service:latest
+  169  docker images
+  170  docker tag streamingapp-assignment-hv-chat:latest avinashsain65/chat-service:latest
+  171  docker push avinashsain65/chat-service:latest
+  172  docker tag streamingapp-assignment-hv-frontend:latest avinashsain65/frontend-service:latest
+  173  docker push avinashsain65/frontend-service:latest
+  174  docker push avinashsain65/frontend-service:latest
+  175  docker tag streamingapp-assignment-hv-streaming:latest avinashsain65/streaming-service:latest
+  176  docker push avinashsain65/streaming-service:latest
+  177  docker push avinashsain65/streaming-service:latest
+  178  docker --version
+  181  kubectl version --client\n
+  182  docker compose down
+  204  git clone https://github.com/docker/getting-started-app.git\n
+  215  docker build -t day02-todo .\n
+  216  docker images
+  217  docker login
+  218  docker tag day02-todo:latest avinashsain65/cka-2025:latest
+  219  docker images
+  220  docker push avinashsain65/cka-2025:latest
+  221  docker pull avinashsain65/cka-2025:latest\n
+  222  docker run -dp 6000:6000 avinashsain65/cka-2025:latest
+  223  docker ps
+  224  docker ps
+  225  docker ps -a
+  226  docker logs 87090248c877
+  227  docker build -t avinashsain65/cka-2025:v2 .
+  228  docker run -dp 6000:6000 avinashsain65/cka-2025:v2
+  229  docker ps
+  236  docker build --no-cache -t avinashsain65/cka-2025:latest .\n
+  237  docker run -dp 6000:6000 avinashsain65/cka-2025:latest
+  238  docker ps
+  239  docker ps -a
+  240  docker log f3544060deca
+  268  aws configure
+  392  aws ec2 describe-instances \\n  --instance-ids i-02d335cd9ff3ce901 \\n  --query 'Reservations[0].Instances[0].PublicIpAddress' \\n  --output text
+  394  aws ec2 describe-instances \\n  --instance-ids i-02d335cd9ff3ce901 \\n  --query 'Reservations[0].Instances[0].PublicIpAddress' \\n  --output text
+  395  # Check instance status\naws ec2 describe-instances \\n  --instance-ids i-02d335cd9ff3ce901 \\n  --query 'Reservations[0].Instances[0].State.Name' \\n  --output text
+  396  aws ec2 describe-addresses \\n  --query 'Addresses[*].{EIP:PublicIp,InstanceId:InstanceId,AssociationId:AssociationId}' \\n  --output table \\n  --region us-east-1
+  397  aws ec2 describe-instances \\n  --instance-ids i-02d335cd9ff3ce901 \\n  --query 'Reservations[0].Instances[0].State.Name' \\n  --output text \\n  --region us-east-1
+  461  aws configure\n\n\n
+  462  aws configure
+  475  docker image prune
+  476  docker image prune -a  
+  477  docker volume prune 
+  478  docker system df               # Show disk usage breakdown\ndocker ps -a                   # List all containers (including stopped)\ndocker images -a               # List all images
+  479  docker system df
+  480  docker system df
+  481  docker ps -a 
+  482  docker images -a 
+  484  docker compose up --build
+  485  docker images
+  486  docker image prune 
+  487  docker image prune -a 
+  488  docker images
+  489  docker system prune
+  490  docker system prune -a
+  491  docker system prune -a --volumes
+  492  docker compose up --build
+  493  docker system prune
+  494  docker system prune -a --volumes
+  495  docker system prune -a
+  496  docker compose up --build
+  497  docker system prune -a
+  498  docker system prune -a --volumes
+  499  docker image prune 
+  500  docker images
+  501  docker compose up --build
+  502  docker builder prune -a -f\n
+  503  docker system prune -a --volumes -f\n
+  504  docker images
+  505  docker system df
+  506  docker ps -a  
+  507  docker images -a 
+  508  docker compose up --build
+  509  docker ps -a  
+  510  docker system df
+  511  docker system prune -a
+  512  docker compose up --build
+  519  docker compose down\n
+  523  docker system prune -a
+  524  docker ps
+  527  docker compose restart order-service
+  535  docker compose up --build
+  536  docker system prune -a
+  537  docker compose up --build
+  538  docker compose down\n
+  539  docker system prune -a
+  540  docker builder prune -a\n
+  541  docker builder prune -a -f\n
+  542  docker system prune -a --volumes -f\n
+  543  docker compose up --build
+  544  docker compose up -d
+  545  docker compose down
+  546  docker compose up --build
+  547  docker compose restart order-service
+  548  docker compose down\n
+  549  docker compose up --build\n
+  550  docker compose down\n
+  551  docker compose up --build\n
+  552  docker compose down\n
+  553  docker compose up --build\n
+  554  docker compose down\n
+  556  docker run --rm alpine ping -c 3 google.com\n
+  559  docker compose up --build\n
+  560  docker compose down\n
+  561  docker compose up --build\n
+  562  docker compose down -v\n
+  563  docker compose up --build
+  583  docker images
+  584  aws configure
+  588  docker images
+  589  docker images
+  590  docker tag e-commercestore-user-service:latest    avinashsain65/user-service:latest\n
+  591  docker tag e-commercestore-product-service:latest avinashsain65/product-service:latest\n
+  592  docker tag e-commercestore-cart-service:latest    avinashsain65/cart-service:latest\n
+  593  docker tag e-commercestore-order-service:latest   avinashsain65/order-service:latest\n
+  594  docker tag e-commercestore-frontend-service:latest avinashsain65/frontend:latest\n
+  595  docker images
+  596  docker push avinashsain65/user-service:latest\n
+  597  docker push avinashsain65/product-service:latest\n
+  598  docker push avinashsain65/cart-service:latest\n
+  599  docker push avinashsain65/order-service:latest
+  600  docker push avinashsain65/frontend:latest\n
+  601  docker push avinashsain65/frontend:latest\n
+  604  docker images
+  609  aws s3api create-bucket \\n  --bucket ecommerce-store-terraform-state \\n  --region ap-south-1 \\n  --create-bucket-configuration LocationConstraint=ap-south-1\n\n# Enable versioning\naws s3api put-bucket-versioning \\n  --bucket ecommerce-store-terraform-state \\n  --versioning-configuration Status=Enabled\n\n# Enable encryption\naws s3api put-bucket-encryption \\n  --bucket ecommerce-store-terraform-state \\n  --server-side-encryption-configuration '{\n    "Rules": [{\n      "ApplyServerSideEncryptionByDefault": {\n        "SSEAlgorithm": "AES256"\n      }\n    }]\n  }'\n\n# Block public access\naws s3api put-public-access-block \\n  --bucket ecommerce-store-terraform-state \\n  --public-access-block-configuration \\n    "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+  610  aws s3api create-bucket \\n  --bucket ecommerce-store-terraform-state \\n  --region us-east-1 \\n  --create-bucket-configuration LocationConstraint=us-east-1
+  611  aws s3api create-bucket \\n  --bucket ecommerce-store-terraform-state \\n  --region us-east-1
+  612  aws s3api create-bucket \\n  --bucket avinashsain65-terraform-state \\n  --region us-east-1
+  613  aws s3api put-bucket-versioning \\n  --bucket avinashsain65-terraform-state \\n  --versioning-configuration Status=Enabled
+  614  aws s3api put-bucket-encryption \\n  --bucket ecommerce-store-terraform-state \\n  --server-side-encryption-configuration '{\n    "Rules": [{\n      "ApplyServerSideEncryptionByDefault": {\n        "SSEAlgorithm": "AES256"\n      }\n    }]\n  }'
+  615  aws s3api put-public-access-block \\n  --bucket ecommerce-store-terraform-state \\n  --public-access-block-configuration \\n    "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+  617  aws s3api head-bucket --bucket avinashsain65-terraform-state\n
+  618  aws s3api create-bucket \\n  --bucket avinashsain65-terraform-state \\n  --region us-east-1
+  640  docker images
+  641  docker compose down
+  642  docker images
+  643  docker images
+  644  docker compose build -d\n
+  646  docker images
+  647  docker ps
+  648  docker images
+  649  docker tag e-commercestore-user-service:latest     avinashsain65/user-service:latest\n
+  650  docker tag e-commercestore-product-service:latest  avinashsain65/product-service:latest\n
+  651  docker tag e-commercestore-cart-service:latest     avinashsain65/cart-service:latest\n
+  652  docker tag e-commercestore-order-service:latest    avinashsain65/order-service:latest\n
+  653  docker tag e-commercestore-frontend-service:latest avinashsain65/frontend:latest\n
+  654  docker images
+  655  docker login
+  656  docker login
+  657  for svc in user-service product-service cart-service order-service frontend; do\n  docker push avinashsain65/$svc:latest\ndone
+  658  docker login
+  659  docker images
+  660  for svc in user-service product-service cart-service order-service frontend; do\n  docker push avinashsain65/$svc:latest\ndone
+  661  docker images
+  662  docker push avinashsain65/cart-service:latest
+  663  docker push avinashsain65/cart-service:latest
+  664  docker images
+  665  docker push avinashsain65/cart-service:latest
+  666  docker push avinashsain65/cart-service:latest
+  667  docker images
+  668  docker push avinashsain65/cart-service:latest
+  669  docker push avinashsain65/frontend:latest
+  670  docker push avinashsain65/order-service:latest
+  671  docker push avinashsain65/product-service:latest
+  672  docker push avinashsain65/user-service:latest
+  675  aws s3api create-bucket \\n  --bucket avinashsain65-terraform-state \\n  --region us-east-1
+  676  aws s3api put-bucket-versioning \\n  --bucket avinashsain65-terraform-state \\n  --versioning-configuration Status=Enabled
+  714  git rm --cached terraform/terraform.tfvars\n
+  716  git add .gitignore\ngit commit -m "remove terraform.tfvars from tracking and add to gitignore"\ngit push
+  717  git filter-branch --force --index-filter \\n  'git rm --cached --ignore-unmatch terraform/terraform.tfvars' \\n  --prune-empty --tag-name-filter cat -- --all\n
+  718  git push origin --force --all\n
+  719  git push origin --force --tags\n
+  720  git log --all --full-history -- terraform/terraform.tfvars\n
+  727  docker ps
+  728  docker images
+  729  docker compose down
+  730  docker images
+  731  docker system prune -a --volumes -f\n
+  732  docker compose up --build
+  733  docker compose up --build
+  734  docker buildx create --use --name multibuilder 2>/dev/null || true\n
+  735  docker buildx build --platform linux/amd64 \\n  -t avinashsain65/user-service:latest \\n  --push ./backend/user-service
+  736  docker buildx build --platform linux/amd64 \\n  -t avinashsain65/product-service:latest \\n  --push ./backend/product-service
+  737  docker buildx build --platform linux/amd64 \\n  -t avinashsain65/cart-service:latest \\n  --push ./backend/cart-service
+  738  docker buildx build --platform linux/amd64 \\n  -t avinashsain65/order-service:latest \\n  --push ./backend/order-service
+  739  docker buildx build --platform linux/amd64 \\n  -t avinashsain65/frontend:latest \\n  --push ./frontend
+  740  git filter-branch --force --index-filter \\n  'git rm --cached --ignore-unmatch terraform/user_data.sh' \\n  --prune-empty --tag-name-filter cat -- --all
+  741  git push origin --force --all\n
+  742  echo "terraform/terraform.tfvars" >> .gitignore\necho "terraform/*.tfvars" >> .gitignore\ngit add .gitignore\ngit commit -m "add tfvars to gitignore"\ngit push
+  751  docker compose down
+  752  docker images
+  753  docker scout quickview local://e-commercestore-frontend-service:latest
+  754  docker scout cves local://e-commercestore-frontend-service:latest
+  755  docker scout recommendations local://e-commercestore-frontend-service:latest
+  758  docker compose down
+  759  docker buld -t devboard-fe:full .
+  760  docker build -t devboard-fe:full .\n
+  761  docker images
+  762  docker images | greap devboard-fe:full
+  763  docker images | grep devboard-fe:full
+  764  docker images | grep devboard-fe:full
+  765  docker scout quickview local://devboard-fe:full\n
+  766   docker scout cves local://devboard-fe:full
+  767  docker ai
+  772  docker model ull ai/gemma4
+  774  docker Model
+  775  docker model status
+  776  docker desktop enable model-runner
+  777  docker model status
+  778  docker model ull ai/gemma4
+  779  docker model pull ai/gemma4
+  843  aws s3 ls
+  844  aws configure list
+  847  aws configure list
+  849  aws configure
+  850  aws configure
+  851  aws s3 ls
+  852  aws configure list
+  853  aws configure list
+  854  aws s3 ls
+  883  docker images ls
+  884  docker image ls
+  885  docker scan api-golang:latest
+  886  docker scout quickview api-golang:latest
+  890  docker
+  891  docker run docker/whalesay cowsay "Hey Team! 👋"\n
+  892  docker run --rm grycap/cowsay "Hey Team! 👋"
+  893  docker ps
+  894  docker images
+  895  docker run -e POSTGRES_PASSWORD=foobarbaz -p 5432:5432 postgres:15.1-alpine
+  896  docker ps
+  897  docker images
+  898  docker ps
+  899  docker run -d \\n  --name postgres-db \\n  -e POSTGRES_PASSWORD=foobarbaz \\n  -p 5432:5432 \\n  postgres:15.1-alpine
+  900  docker ps
+  901  docker run -d \\n  --name postgres-db \\n  -e POSTGRES_PASSWORD=foobarbaz \\n  -p 5433:5432 \\n  postgres:15.1-alpine
+  902  docker ps
+  903  docker ps -a
+  904  docker images
+  905  docker run -d \\n  --name postgres-db \\n  -e POSTGRES_PASSWORD=foobarbaz \\n  -p 5433:5432 \\n  postgres:15.1-alpine
+  906  docker ps -a
+  907  docker logs postgres-db
+  908  docker ps -a
+  909  docker run --interactive --tty --rm ubuntu:22.04\n
+  910  docker run -it --rm ubuntu:22.04\n
+  911  docker run -it --name my-ubuntu-container ubuntu:22.04\n
+  912  docker container ps -a | grep my-ubuntu-container\n
+  913  docker container inspect my-ubuntu-container\n
+  914  docker start my-ubuntu-container\n
+  915  docker attach my-ubuntu-container\n
+  916  docker ps
+  917  docker ps -a
+  918  docker build --tag my-ubuntu-image -<<EOF\nFROM ubuntu:22.04\nRUN apt update && apt install iputils-ping --yes\nEOF
+  919  docker run -it --rm my-ubuntu-image\n
+  920  docker ps -a
+  921  docker ps
+  922  docker images
+  923  docker run -it --rm ubuntu:22.04\n
+  924  docker run -it --rm ubuntu:22.04\n
+  925  docker volume create my-volume\n
+  926  docker run  -it --rm --mount source=my-volume,destination=/my-data/ ubuntu:22.04\n
+  927  docker run  -it --rm -v my-volume:/my-data ubuntu:22.04\n
+  928  docker run  -it --rm --mount source=my-volume,destination=/my-data/ ubuntu:22.04\n
+  929  docker container prune -f
+  930  docker image prune -a -f
+  931  docker volume prune -f
+  932  docker network prune -f
+  933  docker system prune -a --volumes -f
+  934  docker stop postgres-db
+  935  docker rm postgres-db
+  936  docker container prune -f
+  937  docker volume prune -f
+  938  docker image prune -a -f
+  945  docker build -t api-node:lasted .
+  946  docker compose down
+  953  docker compose up --build
+  955  docker compose down
+  956  docker compose up --build
+  957  docker compose down
+  958  docker compose up --build
+  959  docker compose down
+  965  docker compose up --build
+  966  docker compose down
+  967  docker compose down
+  968  docker compose up --build
+  969  docker build -t streamingapp/auth ./backend/authService
+  970  docker build -t streamingapp/streaming -f backend/streamingService/Dockerfile ./backend\n
+  971  docker build -t streamingapp/admin -f backend/adminService/Dockerfile ./backend\n
+  972  docker build -t streamingapp/chat -f backend/chatService/Dockerfile ./backend\n\n
+  973  docker images
+  974  docker images -a
+  976  docker ps
+  977  docker images
+  978  docker images | greap streamingapp-assignment-hvc
+  979  docker images | grep streamingapp-assignment-hvc
+  980  docker ps
+  981  docker images | grep streamingapp-assignment-hvc
+  982  aws sts get-caller-identity
+  985  k=kubectl\nt=task\ntl='task --list-all'
+  987  docker version
+  989  kubectl version --client
+ 1001  docker ps
+ 1002  docker ps | grep "streamingapp-assignment"
+ 1003  docker image | grap "streamingapp-assignment"
+ 1004  docker images | grap "streamingapp-assignment"
+ 1005  docker ps | grep "streamingapp-assignment"
+ 1006  docker image | grep "streamingapp-assignment"
+ 1007  docker images | grep "streamingapp-assignment"
+ 1008  docker ps | grep "streamingapp-assignment"
+ 1009  docker images | grep "streamingapp-assignment"
+ 1011  aws ecr describe-repositories --region us-east-1 --query "repositories[].repositoryUri" --output table\n
+ 1012  echo test > /tmp/t.txt\naws s3 cp /tmp/t.txt s3://streamingappbucketb15/test.txt --region us-west-2 && \\naws s3 rm s3://streamingappbucketb15/test.txt --region us-west-2 && echo "BUCKET ACCESS OK"
+ 1013  helm lint helm/streamingapp\n
+ 1014  helm template streamingapp helm/streamingapp | head -50\n
+ 1015  grep -E "registry:|awsRegion:|s3Bucket:" helm/streamingapp/values.yaml\n
+ 1016  grep -E "registry:|awsRegion:|s3Bucket:" helm/streamingapp/values.yaml\n
+ 1017  git check-ignore .env && echo "IGNORED - good" \n
+ 1018  git ls-files | grep -i '\.env$'\n
+ 1020  grep -E "registry:|awsRegion:|s3Bucket:" helm/streamingapp/values.yaml\n
+ 1021  grep -E "registry:|awsRegion:|s3Bucket:" helm/streamingapp/values.yaml\n
+ 1022  helm template streamingapp helm/streamingapp | head -50\n
+ 1023  helm template streamingapp helm/streamingapp | head -50\n
+ 1024  git ls-files | grep -i '\.env$'\n
+ 1025  grep -E "registry:|awsRegion:|s3Bucket:" helm/streamingapp/values.yaml\n
+ 1026  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1027  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1028  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1029  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1030  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1031  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1032  brew install eksctl
+ 1033  aws ecr describe-images --repository-name streamingapp/auth --region us-east-1 \\n  --query 'imageDetails[].imageTags' --output table
+ 1034  eksctl create cluster \\n  --name streamingapp-eks \\n  --region us-east-1 \\n  --nodegroup-name workers \\n  --node-type t3.medium \\n  --nodes 2 --nodes-min 2 --nodes-max 3 \\n  --managed
+ 1035  aws eks update-kubeconfig --name streamingapp-eks --region us-east-1\n
+ 1036  kubectl get nodes\n
+ 1037  kubectl get pods -n kube-system | grep metrics-server\n
+ 1038  kubectl -n streamingapp get pods -w\n
+ 1039  kubectl get nodes\n
+ 1040  kubectl -n streamingapp get pods -w\n
+ 1041  kubectl -n streamingapp get pods -w\n
+ 1042  kubectl -n streamingapp get pods\n
+ 1043  kubectl -n streamingapp get pods -w\n
+ 1044  kubectl -n streamingapp describe pod auth-5b7cbd4697-79vb8 | tail -10
+ 1045  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')\necho "Role: $NODE_ROLE"
+ 1046  aws iam attach-role-policy --role-name $NODE_ROLE \\n  --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy\n
+ 1047  eksctl create addon --name aws-ebs-csi-driver \\n  --cluster streamingapp-eks --region us-east-1 --force\n
+ 1048  sh "docker build -t ${img} -f ${svc.context}/${svc.dockerfile} ${svc.context}"\n
+ 1049  sh "docker build --platform linux/amd64 -t ${img} -f ${svc.context}/${svc.dockerfile} ${svc.context}"\n
+ 1050  kubectl -n streamingapp get pods -w\n
+ 1051  kubectl -n streamingapp get pods\n
+ 1052  kubectl -n streamingapp get pods -w\n
+ 1053  kubectl -n streamingapp get pods\n
+ 1054  kubectl -n streamingapp get pods -w\n
+ 1055  kubectl -n streamingapp get pods -w\n
+ 1056  kubectl -n streamingapp get pods\n
+ 1057  aws eks update-kubeconfig --name streamingapp-eks --region us-east-1\n
+ 1058  kubectl -n streamingapp get pods\n
+ 1059  kubectl -n streamingapp get pods -w\n
+ 1060  kubectl -n streamingapp get pods\n
+ 1061  kubectl -n streamingapp get pods -w\n
+ 1062  kubectl -n streamingapp get pods\n
+ 1063  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')
+ 1064  aws iam attach-role-policy --role-name $NODE_ROLE \\n  --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+ 1065  eksctl create addon --name aws-ebs-csi-driver \\n  --cluster streamingapp-eks --region us-east-1 --force
+ 1066  kubectl -n streamingapp get pods\n
+ 1067  kubectl -n streamingapp describe pod mongo-0 | tail -5\n
+ 1068  kubectl -n streamingapp get pvc\n
+ 1069  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')
+ 1070  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')\necho "Role: $NODE_ROLE"
+ 1071  aws iam attach-role-policy --role-name $NODE_ROLE \\n  --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+ 1072  eksctl create addon --name aws-ebs-csi-driver \\n  --cluster streamingapp-eks --region us-east-1 --force
+ 1073  kubectl -n kube-system get pods | grep ebs\n
+ 1074  kubectl -n streamingapp get pods -w\n
+ 1075  kubectl -n streamingapp get pods
+ 1076  kubectl -n streamingapp get pods -w\n
+ 1077  kubectl -n streamingapp describe pod mongo-0 | grep -A 8 Events\n
+ 1078  kubectl -n streamingapp get pvc\n
+ 1079  kubectl get storageclass\n
+ 1080  kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'\n
+ 1081  kubectl get storageclass   # should now show: gp2 (default)\n
+ 1082  kubectl get storageclass\n
+ 1083  kubectl -n streamingapp delete pvc mongo-data-mongo-0\n
+ 1084  kubectl -n streamingapp delete pod mongo-0\n
+ 1085  kubectl -n streamingapp get pvc,pods -w\n
+ 1086  kubectl -n streamingapp get pvc\n
+ 1087  kubectl -n streamingapp get pods -w\n
+ 1088  kubectl -n streamingapp get pods
+ 1089  kubectl -n streamingapp get pods
+ 1090  kubectl -n streamingapp delete pod \\n  admin-cd5cfc5c5-tqtlt \\n  auth-758c44d9d4-5wl6q \\n  chat-5667666c68-vrmqg \\n  streaming-689f58df4b-7w5c5
+ 1091  kubectl -n streamingapp get pods\n
+ 1093  kubectl -n streamingapp get pods\n
+ 1094  kubectl -n streamingapp get pods\n
+ 1095  kubectl -n streamingapp delete statefulset mongo --cascade=orphan\n
+ 1096  kubectl -n streamingapp get pods\n
+ 1098  aws elb describe-instance-health \\n  --load-balancer-name a2ed5a67cfacb4d8097531e8bcf7e050 \\n  --region us-east-1
+ 1101  kubectl -n streamingapp get endpoints frontend\n
+ 1102  helm template streamingapp helm/streamingapp | grep -A 1 CLIENT_URLS | head -4\n
+ 1103  kubectl -n streamingapp get deploy frontend -o jsonpath='{.spec.template.spec.containers[0].image}'; echo\n
+ 1104  kubectl -n streamingapp get pods   # frontend pod should be freshly restarted (AGE seconds)\n
+ 1105  kubectl -n streamingapp get pods
+ 1107  kubectl -n streamingapp get pods
+ 1108  kubectl -n streamingapp get pods -
+ 1109  kubectl -n streamingapp get pods -w
+ 1110  kubectl -n streamingapp get pods
+ 1111  kubectl -n streamingapp describe pod mongo-0 | grep -B 2 -A 6 "Unhealthy\|Killing\|Last State"
+ 1112  helm upgrade streamingapp ./helm/streamingapp -n streamingapp --reuse-values\n
+ 1113  kubectl -n streamingapp get pods -w\n
+ 1114  kubectl -n streamingapp get pods
+ 1115  kubectl -n streamingapp get pods -w\n
+ 1116  kubectl -n streamingapp get pods
+ 1117  kubectl -n streamingapp describe pod mongo-0 | grep -A 4 "Last State"\n
+ 1118  kubectl -n streamingapp logs mongo-0 --previous --tail=15\n
+ 1119  kubectl -n streamingapp scale statefulset mongo --replicas=0\n
+ 1120  kubectl -n streamingapp delete pvc mongo-data-mongo-0\n
+ 1121  kubectl -n streamingapp scale statefulset mongo --replicas=1\n
+ 1122  kubectl -n streamingapp get pods -w\n
+ 1123  kubectl -n streamingapp get pods
+ 1124  kubectl -n streamingapp rollout restart deploy auth streaming admin chat\n
+ 1125  kubectl -n streamingapp get pods    # all Running\n
+ 1126  kubectl -n streamingapp get pods
+ 1127  kubectl -n streamingapp get pods
+ 1128  kubectl -n streamingapp get pods | grep mongo
+ 1129  kubectl -n streamingapp exec -it mongo-0 -- mongosh\n
+ 1130  kubectl -n streamingapp exec deploy/streaming -- sh -c "grep -rn 'localhost:3002\|PUBLIC_URL\|BASE_URL' /app/streamingService --include='*.js' -l | head -3"\n
+ 1131  kubectl -n streamingapp exec deploy/streaming -- sh -c "grep -rn 'thumbnailUrl\|PUBLIC_URL\|BASE_URL' /app/streamingService/controllers /app/streamingService/util 2>/dev/null | grep -v node_modules | head -10"\n
+ 1132  kubectl -n streamingapp get pods
+ 1133  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')
+ 1134  aws iam attach-role-policy --role-name $NODE_ROLE \\n  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+ 1135  ClusterName=streamingapp-eks\nRegionName=us-east-1\ncurl -s https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml \\n | sed "s/{{cluster_name}}/$ClusterName/;s/{{region_name}}/$RegionName/;s/{{http_server_toggle}}/\"On\"/;s/{{http_server_port}}/\"2020\"/;s/{{read_from_head}}/\"Off\"/;s/{{read_from_tail}}/\"On\"/" \\n | kubectl apply -f -
+ 1136  kubectl -n amazon-cloudwatch get pods
+ 1137  aws sns create-topic --name streamingapp-alerts --region us-east-1\n
+ 1138  aws sns subscribe \\n  --topic-arn arn:aws:sns:us-east-1:251478238405:streamingapp-alerts \\n  --protocol email --notification-endpoint avinashsain65@gmail.com
+ 1139  git remote -v
+ 1140  kubectl get nodes
+ 1141  kubectl -n streamingapp get pods
+ 1142  kubectl -n streamingapp get svc
+ 1143  kubectl get pods
+ 1144  kubectl get pods
+ 1145  kubectl -n streamingapp get pods
+ 1146  kubectl -n streamingapp get pods -w
+ 1147  kubectl -n streamingapp get hpa
+ 1148  kubectl -n streamingapp get hpa
+ 1149  aws cloudwatch describe-alarms --alarm-names streamingapp-high-cpu --region us-east-1 \\n  --query 'MetricAlarms[0].{State:StateValue,Reason:StateReason}'
+ 1150  kubectl -n streamingapp get pods | grep mongo\n
+ 1151  kubectl -n streamingapp exec -it mongo-0 -- mongosh\n
+ 1154  eksctl delete cluster --name streamingapp-eks --region us-east-1\n
+ 1157  aws eks list-clusters --region us-east-1\n
+ 1158  aws elb describe-load-balancers --region us-east-1 --query 'LoadBalancerDescriptions[].LoadBalancerName'\n
+ 1159  aws ec2 describe-volumes --region us-east-1 --filters Name=status,Values=available --query 'Volumes[].VolumeId'\n
+ 1160  aws ec2 describe-instances --region us-east-1 \\n  --filters Name=instance-state-name,Values=running \\n  --query 'Reservations[].Instances[].InstanceId'
+ 1161  for repo in frontend auth streaming admin chat; do\n  aws ecr delete-repository \\n    --repository-name streamingapp/$repo \\n    --force \\n    --region us-east-1\ndone
+ 1162  aws ecr describe-repositories --region us-east-1\n
+ 1163  aws sns delete-topic --topic-arn arn:aws:sns:us-east-1:251478238405:streamingapp-alerts --region us-east-1\n
+ 1164  aws cloudwatch delete-alarms --alarm-names streamingapp-high-cpu --region us-east-1\n
+ 1165  aws logs delete-log-group --log-group-name /aws/containerinsights/streamingapp-eks/application --region us-east-1 2>/dev/null\n
+ 1166  aws logs delete-log-group --log-group-name /aws/containerinsights/streamingapp-eks/performance --region us-east-1 2>/dev/null\n
+ 1167  aws logs delete-log-group --log-group-name /aws/containerinsights/streamingapp-eks/dataplane --region us-east-1 2>/dev/null\n
+ 1168  aws logs delete-log-group --log-group-name /aws/containerinsights/streamingapp-eks/host --region us-east-1 2>/dev/null\n
+ 1169  aws logs describe-log-groups --region us-east-1 \\n  --query 'logGroups[].{Name:logGroupName,MB:storedBytes}' --output table
+ 1170  aws eks list-clusters --region us-east-1                                    # []\naws elb describe-load-balancers --region us-east-1 --query 'LoadBalancerDescriptions[].LoadBalancerName'   # []\naws ec2 describe-volumes --region us-east-1 --filters Name=status,Values=available --query 'Volumes[].VolumeId'  # []\naws ecr describe-repositories --region us-east-1 --query 'repositories[].repositoryName'  # [] if you deleted them
+ 1171  aws eks list-clusters --region us-east-1                                    # []\n
+ 1172  aws eks list-clusters --region us-east-1 
+ 1173  aws elb describe-load-balancers --region us-east-1 --query 'LoadBalancerDescriptions[].LoadBalancerName' 
+ 1174  aws ec2 describe-volumes --region us-east-1 --filters Name=status,Values=available --query 'Volumes[].VolumeId'
+ 1175  aws ecr describe-repositories --region us-east-1 --query 'repositories[].repositoryName' 
+ 1176  aws ce get-cost-and-usage \\n  --time-period Start=2026-07-03,End=2026-07-04 \\n  --granularity DAILY \\n  --metrics UnblendedCost \\n  --group-by Type=DIMENSION,Key=SERVICE \\n  --region us-east-1 \\n  --query 'ResultsByTime[0].Groups[?Metrics.UnblendedCost.Amount!=`0`].[Keys[0],Metrics.UnblendedCost.Amount]' \\n  --output table
+ 1177  aws eks list-clusters --region us-east-1 --query clusters\n
+ 1178  aws ec2 describe-instances --region us-east-1 --filters Name=instance-state-name,Values=running --query 'Reservations[].Instances[].InstanceId'\n
+ 1179  aws elb describe-load-balancers --region us-east-1 --query 'LoadBalancerDescriptions[].LoadBalancerName'\n

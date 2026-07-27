@@ -12,13 +12,13 @@ IMAGES=(
   "blue-green-deployment-backend:latest"
   "blue-green-deployment-frontend-blue:latest"
   "blue-green-deployment-frontend-green:latest"
-  "streamingapp-assignment-hvc-admin:latest"
-  "streamingapp-assignment-hvc-admin:latest"
-  "streamingapp-assignment-hvc-auth:latest"
-  "streamingapp-assignment-hvc-chat:latest"
-  "streamingapp-assignment-hvc-frontend:latest"
-  "streamingapp-assignment-hvc-streaming:latest"
-  "myapp:latest"
+  "streamingapp-assignment-hv-admin:latest"
+  "streamingapp-assignment-hv-admin:latest"
+  "streamingapp-assignment-hv-auth:latest"
+  "streamingapp-assignment-hv-chat:latest"
+  "streamingapp-assignment-hv-frontend:latest"
+  "streamingapp-assignment-hv-streaming:latest"
+  #"myapp:latest"
   "python:3.4-alpine"        # deliberately old — FAIL dikhane ke liye
   "alpine:latest"            # clean — PASS dikhane ke liye
 )
