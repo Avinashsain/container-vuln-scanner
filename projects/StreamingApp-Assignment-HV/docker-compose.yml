@@ -16,7 +16,7 @@ services:
       PORT: 3001
       MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3000}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:4000}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -34,7 +34,7 @@ services:
       PORT: 3002
       MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3000}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:4000}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -54,7 +54,7 @@ services:
       PORT: 3003
       MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3000}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:4000}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -73,7 +73,7 @@ services:
       PORT: 3004
       MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3000}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:4000}
     ports:
       - "${CHAT_PORT:-3004}:3004"
 
@@ -93,7 +93,7 @@ services:
       - admin
       - chat
     ports:
-      - "3000:80"
+      - "3008:80"
 
 volumes:
   mongo-data:

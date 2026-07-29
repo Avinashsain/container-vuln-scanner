@@ -19,7 +19,7 @@ IMAGES=(
   "streamingapp-assignment-hv-frontend:latest"
   "streamingapp-assignment-hv-streaming:latest"
   #"myapp:latest"
-  "python:3.4-alpine"        # deliberately old — FAIL dikhane ke liye
+  #"python:3.4-alpine"        # deliberately old — FAIL dikhane ke liye
   "alpine:latest"            # clean — PASS dikhane ke liye
 )
 

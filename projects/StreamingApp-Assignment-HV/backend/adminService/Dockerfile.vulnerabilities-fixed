@@ -10,7 +10,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app/adminService
 
-COPY package*.json ./
+COPY /adminService/package*.json ./
 RUN npm install --omit=dev
 
 # Requires a .dockerignore *inside this adminService/ directory* (since
@@ -18,7 +18,7 @@ RUN npm install --omit=dev
 # secrets get copied into this layer and are retrievable from the image
 # indefinitely, including from old pushed layers even after you later
 # remove the file.
-COPY . ./
+COPY /adminService/. ./
 
 # CVE-2026-13149/14257 (brace-expansion), CVE-2024-21538 (cross-spawn),
 # CVE-2025-64756 (glob), CVE-2026-26996/27903/27904 (minimatch),

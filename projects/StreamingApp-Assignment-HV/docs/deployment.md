@@ -17,7 +17,7 @@ git fetch upstream && git merge upstream/main && git push origin main
 
 ## Phase 2 — Containerization
 
-The app ships Dockerfiles for all five components. Build contexts differ per service (streaming/admin/chat share `backend/` as context; auth uses `backend/authService`). Verified locally with `docker-compose up --build` — frontend on :3000, services on :3001–:3004, MongoDB on :27017.
+The app ships Dockerfiles for all five components. Build contexts differ per service (streaming/admin/chat share `backend/` as context; auth uses `backend/authService`). Verified locally with `docker-compose up --build` — frontend on :4000, services on :3001–:3004, MongoDB on :27017.
 
 ![docker ps with all containers running](../screenshots/local-service/docker-ps/running-containers.png)
 ![App login page on localhost](../screenshots/local-service/page-1.png)

@@ -1,0 +1,51 @@
+FROM node:18-alpine AS base
+
+# CVE-2026-31789 (libcrypto3/libssl3, CRITICAL), plus musl/zlib CVEs:
+# pull the patched alpine package set instead of what shipped in the layer.
+RUN apk update && apk upgrade --no-cache
+
+# Run as a non-root user — the original had no user switch at all, so the
+# app ran as root by default.
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app/streamingService
+
+COPY /streamingService/package*.json ./
+RUN npm install --omit=dev
+
+
+# Requires a .dockerignore *inside this streamingService/ directory* (since
+# that's now the build context) that excludes .env — otherwise real
+# secrets get copied into this layer and are retrievable from the image
+# indefinitely, including from old pushed layers even after you later
+# remove the file.
+COPY /streamingService/. ./
+
+# CVE-2026-13149/14257 (brace-expansion), CVE-2024-21538 (cross-spawn),
+# CVE-2025-64756 (glob), CVE-2026-26996/27903/27904 (minimatch),
+# CVE-2026-48815 (sigstore), CVE-2026-59873 and friends (tar): every one of
+# these lives under usr/local/lib/node_modules/npm/node_modules/..., i.e.
+# the npm CLI's own bundled dependencies, not this app's. The container
+# only runs `npm run start` (which just execs node), so npm/npx/corepack/
+# yarn have no reason to ship in the final image — remove them entirely.
+RUN rm -rf \
+      /usr/local/lib/node_modules/npm \
+      /usr/local/lib/node_modules/corepack \
+      /usr/local/bin/npm \
+      /usr/local/bin/npx \
+      /usr/local/bin/corepack \
+      /opt/yarn-v1.22.22 \
+      /usr/local/bin/yarn \
+      /usr/local/bin/yarnpkg
+
+RUN chown -R appuser:appgroup /app/streamingService
+
+USER appuser
+
+ENV NODE_ENV=production
+EXPOSE 3002
+
+# Was guessed as server.js — confirmed via package.json that "start" runs
+# node index.js, so matching that here since npm (and its "start" script)
+# is no longer in the image.
+CMD ["node", "index.js"]

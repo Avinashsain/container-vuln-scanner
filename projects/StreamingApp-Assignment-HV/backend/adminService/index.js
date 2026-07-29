@@ -5,7 +5,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3003;
-const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3000')
+const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3008')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -17,12 +17,18 @@ app.use(cors({
     if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('Not allowed by CORS'));
+    return callback(null, false); // was: callback(new Error('Not allowed by CORS'))
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.use((req, res, next) => {
+  res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
 
 app.use(cookieParser());
 app.use(express.json());

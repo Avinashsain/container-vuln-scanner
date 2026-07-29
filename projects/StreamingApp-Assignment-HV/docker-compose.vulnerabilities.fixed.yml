@@ -1,0 +1,129 @@
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    environment:
+      # Added — the original had no credentials at all, meaning anyone who
+      # could reach this container had full unauthenticated DB access.
+      # Values come from a local .env file, not hardcoded here.
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-streamingapp}
+    # Removed the host port mapping (was "27017:27017"). Every backend
+    # service already reaches Mongo internally via the compose network
+    # using the service name (mongo:27017) — publishing it to the host
+    # was unnecessary exposure of an unauthenticated (until now) database
+    # port to anything else running on your machine/network.
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      # Added so dependent services wait for Mongo to actually be ready
+      # to accept connections, not just for its container to have started.
+      test: ["CMD", "mongosh", "-u", "${MONGO_ROOT_USER}", "-p", "${MONGO_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  auth:
+    build:
+      context: ./backend/authService
+      dockerfile: Dockerfile.vulnerabilities-fixed
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 3001
+      # Updated to include the auth credentials mongo now requires.
+      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      # Was defaulting to :4000, but frontend actually publishes on :3008
+      # below — a browser loading the app at localhost:3008 would have had
+      # every request to this service rejected by CORS, since the Origin
+      # header (3008) would never match this allow-list (4000).
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+    ports:
+      - "${AUTH_PORT:-3001}:3001"
+
+  streaming:
+    build:
+      context: ./backend
+      dockerfile: streamingService/Dockerfile.vulnerabilities-fixed
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 3002
+      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+      AWS_CDN_URL: ${AWS_CDN_URL:-}
+      STREAMING_PUBLIC_URL: ${STREAMING_PUBLIC_URL:-http://localhost:3002}
+    ports:
+      - "${STREAMING_PORT:-3002}:3002"
+
+  admin:
+    build:
+      context: ./backend
+      dockerfile: adminService/Dockerfile.vulnerabilities-fixed
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 3003
+      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+      AWS_CDN_URL: ${AWS_CDN_URL:-}
+    ports:
+      - "${ADMIN_PORT:-3003}:3003"
+
+  chat:
+    build:
+      context: ./backend
+      dockerfile: chatService/Dockerfile.vulnerabilities-fixed
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 3004
+      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+    ports:
+      - "${CHAT_PORT:-3004}:3004"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.vulnerabilities-fixed
+      args:
+        REACT_APP_AUTH_API_URL: ${REACT_APP_AUTH_API_URL:-http://localhost:3001/api}
+        REACT_APP_STREAMING_API_URL: ${REACT_APP_STREAMING_API_URL:-http://localhost:3002/api}
+        REACT_APP_STREAMING_PUBLIC_URL: ${REACT_APP_STREAMING_PUBLIC_URL:-http://localhost:3002}
+        REACT_APP_ADMIN_API_URL: ${REACT_APP_ADMIN_API_URL:-http://localhost:3003/api/admin}
+        REACT_APP_CHAT_API_URL: ${REACT_APP_CHAT_API_URL:-http://localhost:3004/api/chat}
+        REACT_APP_CHAT_SOCKET_URL: ${REACT_APP_CHAT_SOCKET_URL:-http://localhost:3004}
+    depends_on:
+      - auth
+      - streaming
+      - admin
+      - chat
+    ports:
+      - "3008:80"
+
+volumes:
+  mongo-data:
+  

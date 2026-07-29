@@ -11,6 +11,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 
 COPY package*.json ./
+
 RUN npm install --omit=dev
 
 # Requires a .dockerignore in this directory that excludes .env — see the
