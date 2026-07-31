@@ -4,14 +4,19 @@
 cd "$(dirname "$0")/.."
 
 IMAGES=(
-  "myapp:latest"
-  "python:3.4-alpine"
-  "alpine:latest"
-  "blue-green-deployment-backend:latest"
-  "blue-green-deployment-frontend-blue:latest"
-  "blue-green-deployment-frontend-green:latest"
-  "streamingapp-assignment-hvc-auth:latest"
-  "streamingapp-assignment-hvc-frontend:latest"
+    #"myapp:latest"
+    #"python:3.4-alpine"
+    "alpine:latest"
+    #blue-green-deployment ke liye images
+    "blue-green-deployment-backend:latest"
+    "blue-green-deployment-frontend-blue:latest"
+    "blue-green-deployment-frontend-green:latest"
+    #streamingapp-assignment-hv ke liye images
+    "streamingapp-assignment-hv-admin:latest"
+    "streamingapp-assignment-hv-auth:latest"
+    "streamingapp-assignment-hv-chat:latest"
+    "streamingapp-assignment-hv-frontend:latest"
+    "streamingapp-assignment-hv-streaming:latest"
 )
 
 ROUNDS=10

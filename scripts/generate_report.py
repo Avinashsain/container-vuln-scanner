@@ -6,6 +6,7 @@ Usage: python3 scripts/generate_report.py reports/scan.json reports/scan.html
 import json
 import sys
 from datetime import datetime
+from pathlib import Path
 
 SEVERITY_COLORS = {
     "CRITICAL": "#d32f2f",  # red
@@ -15,8 +16,29 @@ SEVERITY_COLORS = {
     "UNKNOWN":  "#757575",  # grey
 }
 
+def resolve_input_path(json_file):
+    input_path = Path(json_file)
+    if input_path.exists():
+        return input_path
+
+    # Common workflow passes reports/scan.json, but that placeholder may not
+    # exist in a checkout that already contains generated reports. Fall back to
+    # the newest JSON report found under the reports directory.
+    if input_path.name == "scan.json" and input_path.parent.name == "reports":
+        candidates = sorted(
+            Path("reports").glob("*.json"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        if candidates:
+            return candidates[0]
+
+    raise FileNotFoundError(f"Input report not found: {json_file}")
+
+
 def generate_html(json_file, html_file):
-    with open(json_file) as f:
+    resolved_input = resolve_input_path(json_file)
+    with open(resolved_input) as f:
         data = json.load(f)
 
     image_name = data.get("ArtifactName", "unknown")
@@ -79,9 +101,12 @@ def generate_html(json_file, html_file):
 </body>
 </html>"""
 
-    with open(html_file, "w") as f:
+    output_path = Path(html_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w") as f:
         f.write(html)
-    print(f"✅ HTML report created: {html_file}")
+    print(f"✅ HTML report created: {output_path}")
 
 if __name__ == "__main__":
     generate_html(sys.argv[1], sys.argv[2])

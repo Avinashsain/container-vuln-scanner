@@ -5,10 +5,27 @@ Usage: python3 scripts/parse_scan.py reports/python34-scan.json
 """
 import json
 import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def resolve_report_path(json_file):
+    path = Path(json_file)
+    if path.is_absolute() and path.exists():
+        return path
+
+    candidate = path if path.exists() else REPO_ROOT / path
+    if candidate.exists():
+        return candidate
+
+    raise FileNotFoundError(f"Report file not found: {json_file}")
+
 
 def parse_report(json_file):
     # Step 1: Load the JSON file created by Trivy
-    with open(json_file, "r") as f:
+    resolved_path = resolve_report_path(json_file)
+    with open(resolved_path, "r") as f:
         data = json.load(f)
 
     # Step 2: Prepare counters for each severity level

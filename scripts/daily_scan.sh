@@ -1,13 +1,28 @@
 #!/bin/bash
 # daily_scan.sh - scans a list of images and sends one Slack summary
-cd "$(dirname "$0")/.."          # move to project root
-source configs/scanner-config.env
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+cd "${REPO_ROOT}"
+
+if [[ -f "${REPO_ROOT}/configs/scanner-config.env" ]]; then
+    source "${REPO_ROOT}/configs/scanner-config.env"
+else
+    echo "❌ Missing config: ${REPO_ROOT}/configs/scanner-config.env" >&2
+    exit 1
+fi
+
+mkdir -p "${REPO_ROOT}/reports"
 
 IMAGES=("myapp:latest" "nginx:latest" "alpine:latest")
 
 for IMG in "${IMAGES[@]}"; do
     SAFE=$(echo "$IMG" | tr '/:' '__')
-    trivy image --format json --output "reports/daily-$SAFE.json" "$IMG"
-    python3 notifications/slack_notify.py "reports/daily-$SAFE.json"
-    python3 scripts/push_metrics.py "reports/daily-$SAFE.json"
+    REPORT_FILE="${REPO_ROOT}/reports/daily-${SAFE}.json"
+
+    trivy image --format json --output "${REPORT_FILE}" "$IMG"
+    python3 "${REPO_ROOT}/notifications/slack_notify.py" "${REPORT_FILE}"
+    python3 "${REPO_ROOT}/scripts/push_metrics.py" "${REPORT_FILE}"
 done

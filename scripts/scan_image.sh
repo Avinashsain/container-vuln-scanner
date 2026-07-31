@@ -2,7 +2,10 @@
 # scan_image.sh - Scans an image and fails if threshold exceeded
 # Usage: ./scripts/scan_image.sh myapp:latest
 
-set -e  # stop the script on any error
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 IMAGE=$1
 if [ -z "$IMAGE" ]; then
@@ -10,11 +13,13 @@ if [ -z "$IMAGE" ]; then
     exit 1
 fi
 
-# Load configuration
-source configs/scanner-config.env
+# Load configuration from the repository root regardless of the caller's cwd.
+source "${REPO_ROOT}/configs/scanner-config.env"
 
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 SAFE_NAME=$(echo "$IMAGE" | tr '/:' '__')   # replace / and : for filename
+REPORT_DIR="${REPO_ROOT}/${REPORT_DIR}"
+mkdir -p "$REPORT_DIR"
 REPORT_FILE="$REPORT_DIR/${SAFE_NAME}-${TIMESTAMP}.json"
 
 echo "🔍 Scanning image: $IMAGE"

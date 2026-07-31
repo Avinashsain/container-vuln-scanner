@@ -10,9 +10,26 @@ import os
 import sys
 import urllib.request   # built-in, no pip install needed
 import urllib.error
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def resolve_report_path(json_file):
+    path = Path(json_file)
+    if path.is_absolute() and path.exists():
+        return path
+
+    candidate = path if path.exists() else REPO_ROOT / path
+    if candidate.exists():
+        return candidate
+
+    raise FileNotFoundError(f"Report file not found: {json_file}")
+
 
 def build_summary(json_file):
-    with open(json_file) as f:
+    resolved_path = resolve_report_path(json_file)
+    with open(resolved_path) as f:
         data = json.load(f)
     summary = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
     for result in data.get("Results", []):

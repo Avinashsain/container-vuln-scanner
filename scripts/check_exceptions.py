@@ -2,8 +2,12 @@
 """Warns if any approved exception has passed its expiry date."""
 import json
 from datetime import date
+from pathlib import Path
 
-with open("configs/exceptions.json") as f:
+repo_root = Path(__file__).resolve().parent.parent
+exceptions_file = repo_root / "configs" / "exceptions.json"
+
+with open(exceptions_file) as f:
     exceptions = json.load(f)
 
 today = date.today().isoformat()
