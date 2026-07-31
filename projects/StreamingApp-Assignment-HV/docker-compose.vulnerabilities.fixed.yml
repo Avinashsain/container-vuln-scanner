@@ -37,11 +37,8 @@ services:
       # Updated to include the auth credentials mongo now requires.
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      # Was defaulting to :4000, but frontend actually publishes on :3008
-      # below — a browser loading the app at localhost:3008 would have had
-      # every request to this service rejected by CORS, since the Origin
-      # header (3008) would never match this allow-list (4000).
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      # Keep the browser-facing services pinned to the actual frontend port.
+      CLIENT_URLS: http://localhost:3008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -60,7 +57,7 @@ services:
       PORT: 3002
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      CLIENT_URLS: http://localhost:3008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -81,7 +78,7 @@ services:
       PORT: 3003
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      CLIENT_URLS: http://localhost:3008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -101,7 +98,7 @@ services:
       PORT: 3004
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      CLIENT_URLS: http://localhost:3008
     ports:
       - "${CHAT_PORT:-3004}:3004"
 

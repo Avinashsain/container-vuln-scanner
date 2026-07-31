@@ -12,17 +12,23 @@ const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'ht
 
 const app = express();
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(null, false); // was: callback(new Error('Not allowed by CORS'))
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const isAllowed = !origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin);
+
+  if (isAllowed) {
+    res.header('Access-Control-Allow-Origin', origin || allowedOrigins[0] || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  }
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 
 app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
