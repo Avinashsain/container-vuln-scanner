@@ -1,0 +1,59 @@
+FROM node:25-alpine
+
+# Confirm this base image tag is intentional — every other service in this
+# project uses node:18-alpine. Jumping to 25 is a large major-version leap
+# (different V8/engine, potential breaking changes for native deps like
+# bcrypt/bcryptjs, mongoose, the AWS SDK). If this was meant to be 18,
+# change the FROM line before building.
+
+# OS package upgrade — same fix applied to every other service: pulls the
+# patched alpine package set instead of whatever shipped in this base layer.
+RUN apk update && apk upgrade --no-cache
+
+# Run as non-root — the original had no user switch, so the app ran as
+# root by default.
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+
+COPY package*.json ./
+# --omit=dev instead of a plain `npm install`: skips devDependencies
+# (nodemon, etc.) in the shipped image, matching every other service here.
+RUN npm install --omit=dev
+
+# Requires a .dockerignore in this directory (or at whatever directory is
+# actually this service's build context — check your compose file's
+# `context:` value) excluding .env. Without it, real secrets get copied
+# into this layer and are retrievable from the image indefinitely, even
+# after the file is later removed from the repo. This exact mistake has
+# already leaked AWS credentials twice in this project — don't skip it.
+COPY . .
+
+# Same npm/npx/corepack/yarn removal as your other services — the
+# container only ever runs the app directly, never npm itself at runtime,
+# so this tooling (and the CVEs living in its own bundled dependencies)
+# has no reason to ship.
+RUN rm -rf \
+      /usr/local/lib/node_modules/npm \
+      /usr/local/lib/node_modules/corepack \
+      /usr/local/bin/npm \
+      /usr/local/bin/npx \
+      /usr/local/bin/corepack \
+      /opt/yarn-v1.22.22 \
+      /usr/local/bin/yarn \
+      /usr/local/bin/yarnpkg
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+# Confirmed via package.json: main is server.js. Note the original
+# "start": "nodemon server.js" script won't work here anyway once npm is
+# removed below — nodemon (a devDependency) isn't installed in this image,
+# and shouldn't be running the production process regardless. Fix
+# package.json's "start" script to `node server.js` (keep "dev" as
+# `nodemon server.js` for local development).
+CMD ["node", "server.js"]
