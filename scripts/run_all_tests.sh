@@ -13,7 +13,6 @@ IMAGES=(
   "blue-green-deployment-frontend-blue:latest"
   "blue-green-deployment-frontend-green:latest"
   "streamingapp-assignment-hv-admin:latest"
-  "streamingapp-assignment-hv-admin:latest"
   "streamingapp-assignment-hv-auth:latest"
   "streamingapp-assignment-hv-chat:latest"
   "streamingapp-assignment-hv-frontend:latest"
@@ -26,6 +25,7 @@ IMAGES=(
 PASS_COUNT=0
 FAIL_COUNT=0
 RESULTS=""
+REPORT_FILES=()
 
 echo "════════════════════════════════════════════"
 echo "  FULL PIPELINE TEST — ${#IMAGES[@]} images"
@@ -33,12 +33,14 @@ echo "════════════════════════�
 
 for IMG in "${IMAGES[@]}"; do
     SAFE=$(echo "$IMG" | tr '/:' '__')
+    REPORT_PATH="reports/$SAFE.json"
+    REPORT_FILES+=("$REPORT_PATH")
     echo ""
     echo "─────────────────────────────────────────"
     echo "🔍 [1/5] Scanning: $IMG"
 
     # 1. JSON report banao
-    trivy image --quiet --format json --output "reports/$SAFE.json" "$IMG"
+    trivy image --quiet --format json --output "$REPORT_PATH" "$IMG"
 
     # 2. Gate check (test #2 & #3 ki checklist)
     trivy image --quiet --exit-code 1 --severity "$FAIL_ON_SEVERITY" "$IMG" > /dev/null 2>&1
@@ -57,18 +59,18 @@ for IMG in "${IMAGES[@]}"; do
     python3 scripts/generate_report.py "reports/$SAFE.json" "reports/$SAFE.html"
     echo "📄 [3/5] Report: reports/$SAFE.html"
 
-    # 4. Slack alert (test #5) — sirf tab jab webhook set hai
-    if [ -n "$SLACK_WEBHOOK_URL" ]; then
-        python3 notifications/slack_notify.py "reports/$SAFE.json"
-        echo "💬 [4/5] Slack notified"
-    else
-        echo "⏭️  [4/5] Slack skipped (SLACK_WEBHOOK_URL not set)"
-    fi
-
-    # 5. Grafana metrics (test #6)
-    python3 scripts/push_metrics.py "reports/$SAFE.json"
-    echo "📊 [5/5] Metrics pushed to Grafana"
+    # 4. Grafana metrics (test #5)
+    python3 scripts/push_metrics.py "$REPORT_PATH"
+    echo "📊 [4/5] Metrics pushed to Grafana"
 done
+
+# 5. Slack alert — one consolidated summary for all images
+if [ -n "$SLACK_WEBHOOK_URL" ]; then
+    python3 notifications/slack_notify.py "${REPORT_FILES[@]}"
+    echo "💬 [5/5] Slack notified"
+else
+    echo "⏭️  [5/5] Slack skipped (SLACK_WEBHOOK_URL not set)"
+fi
 
 echo ""
 echo "════════════════════════════════════════════"

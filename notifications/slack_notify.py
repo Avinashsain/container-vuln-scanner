@@ -39,6 +39,20 @@ def build_summary(json_file):
                 summary[sev] += 1
     return data.get("ArtifactName", "unknown"), summary
 
+
+def build_batch_summary(json_files):
+    images = []
+    total = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
+
+    for json_file in json_files:
+        image, summary = build_summary(json_file)
+        images.append((image, summary))
+        for sev in total:
+            total[sev] += summary[sev]
+
+    return images, total
+
+
 def send_to_slack(webhook_url, image, summary):
     # Pick emoji + alert level based on worst finding
     if summary["CRITICAL"] > 0:
@@ -62,18 +76,58 @@ def send_to_slack(webhook_url, image, summary):
     with urllib.request.urlopen(req, timeout=10) as resp:
         print(f"✅ Slack notified (HTTP {resp.status})")
 
+
+def send_batch_to_slack(webhook_url, images, summary):
+    if summary["CRITICAL"] > 0:
+        emoji, level = "🔴", "CRITICAL ALERT"
+    elif summary["HIGH"] > 0:
+        emoji, level = "🟠", "High severity found"
+    else:
+        emoji, level = "🟢", "Scan clean / low risk"
+
+    lines = [
+        f"{emoji} *{level}* — {len(images)} images scanned",
+        f"> Total: Critical: *{summary['CRITICAL']}* | High: *{summary['HIGH']}* | "
+        f"Medium: {summary['MEDIUM']} | Low: {summary['LOW']}",
+    ]
+
+    for image, per_image_summary in images:
+        lines.append(
+            f"• {image}: Critical {per_image_summary['CRITICAL']} | "
+            f"High {per_image_summary['HIGH']} | Medium {per_image_summary['MEDIUM']} | "
+            f"Low {per_image_summary['LOW']}"
+        )
+
+    message = {"text": "\n".join(lines)}
+
+    req = urllib.request.Request(
+        webhook_url,
+        data=json.dumps(message).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        print(f"✅ Slack notified (HTTP {resp.status})")
+
 if __name__ == "__main__":
     webhook = os.environ.get("SLACK_WEBHOOK_URL")
     if not webhook:
         print("⏭️  Slack skipped: SLACK_WEBHOOK_URL not set")
         sys.exit(0)   # not an error — notifications are optional
 
-    if len(sys.argv) < 2:
-        print("❌ Usage: python3 slack_notify.py <trivy-json-report>")
+    report_paths = sys.argv[1:]
+    if not report_paths:
+        print("❌ Usage: python3 slack_notify.py <trivy-json-report> [<trivy-json-report> ...]")
         sys.exit(1)
 
+    image = None
+    images = None
+    summary = None
+
     try:
-        image, summary = build_summary(sys.argv[1])
+        if len(report_paths) == 1:
+            image, summary = build_summary(report_paths[0])
+        else:
+            images, summary = build_batch_summary(report_paths)
     except FileNotFoundError:
         print(f"❌ Report file not found: {sys.argv[1]}")
         sys.exit(1)
@@ -82,7 +136,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        send_to_slack(webhook, image, summary)
+        if image is not None:
+            send_to_slack(webhook, image, summary)
+        else:
+            send_batch_to_slack(webhook, images, summary)
     except urllib.error.HTTPError as e:
         # Slack ne request reject ki (404 = wrong URL, 400 = bad payload)
         print(f"⚠️  Slack rejected the request (HTTP {e.code})")

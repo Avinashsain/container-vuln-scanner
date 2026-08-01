@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "3008:3008"
+    environment:
+      CLIENT_URLS: ${CLIENT_URLS:-http://localhost:3008}
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/streamingapp}
