@@ -30,7 +30,7 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
 
 | Service | Port | Description |
 |---|---|---|
-| Frontend | 3000 | React.js UI |
+| Frontend | 3005 | React.js UI |
 | User Service | 3001 | Auth, JWT, user profiles |
 | Product Service | 3002 | Product catalog, categories, inventory |
 | Cart Service | 3003 | Cart management, validation |
@@ -47,7 +47,7 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
                  ┌─────────────────────┐
                  │   AWS Security Group │
                  │  Ports: 22, 80,      │
-                 │  3000, 3001–3004     │
+                 │  3005, 3001–3004     │
                  └─────────┬───────────┘
                             │
                             ▼
@@ -64,7 +64,7 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
               │   (bridge)                │
               │                           │
      ┌────────┴──────────────────────┐    │
-     │  frontend-service  :3000      │    │
+     │  frontend-service  :3005      │    │
      │  user-service      :3001      │    │
      │  product-service   :3002      │    │
      │  cart-service      :3003      │    │
@@ -233,7 +233,7 @@ Resources created:
 | `aws_subnet` | subnet-05ccc71df59a18393 | 10.0.1.0/24, ap-south-1a |
 | `aws_internet_gateway` | igw-08ababb76b9e84237 | Attached to VPC |
 | `aws_route_table` | rtb-0eeddaead3d1464e2 | 0.0.0.0/0 → IGW |
-| `aws_security_group` | sg-05862941850827abf | Ports 22,80,3000-3004 |
+| `aws_security_group` | sg-05862941850827abf | Ports 22,80,3005-3004 |
 | `aws_key_pair` | ecommerce-store-key | SSH access |
 | `aws_instance` | i-095c5bd1a20a45eab | t3.medium, Ubuntu 22.04 |
 
@@ -243,7 +243,7 @@ Resources created:
 |---|---|---|---|
 | Inbound | 22 | Your IP | SSH access |
 | Inbound | 80 | 0.0.0.0/0 | HTTP |
-| Inbound | 3000 | 0.0.0.0/0 | Frontend |
+| Inbound | 3005 | 0.0.0.0/0 | Frontend |
 | Inbound | 3001-3004 | 0.0.0.0/0 | Backend services |
 | Outbound | All | 0.0.0.0/0 | All traffic |
 
@@ -423,7 +423,7 @@ terraform output
 ```
 cart_service_url    = "http://98.81.52.9:3003"
 ec2_instance_id     = "i-095c5bd1a20a45eab"
-frontend_url        = "http://98.81.52.9:3000"
+frontend_url        = "http://98.81.52.9:3005"
 order_service_url   = "http://98.81.52.9:3004"
 product_service_url = "http://98.81.52.9:3002"
 public_dns          = "ec2-3-237-240-98.compute-1.amazonaws.com"
@@ -523,7 +523,7 @@ docker ps
 
 ```bash
 # Frontend
-curl http://98.81.52.9:3000
+curl http://98.81.52.9:3005
 # Expected: HTML page "Frontend is Live"
 
 # User Service
@@ -553,7 +553,7 @@ docker ps
 Expected output:
 ```
 CONTAINER ID  IMAGE                              STATUS         PORTS                   NAMES
-xxxx          avinashsain65/frontend:latest      Up 5 minutes   0.0.0.0:3000->3000/tcp  frontend-service
+xxxx          avinashsain65/frontend:latest      Up 5 minutes   0.0.0.0:3005->3005/tcp  frontend-service
 xxxx          avinashsain65/user-service:latest  Up 5 minutes   0.0.0.0:3001->3001/tcp  user-service
 xxxx          avinashsain65/product-service      Up 5 minutes   0.0.0.0:3002->3002/tcp  product-service
 xxxx          avinashsain65/cart-service         Up 5 minutes   0.0.0.0:3003->3003/tcp  cart-service

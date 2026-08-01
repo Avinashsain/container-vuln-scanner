@@ -17,6 +17,11 @@ IMAGES=(
   "streamingapp-assignment-hv-chat:latest"
   "streamingapp-assignment-hv-frontend:latest"
   "streamingapp-assignment-hv-streaming:latest"
+  "e-commercestore-cart-service:latest"
+  "e-commercestore-frontend-service:latest"
+  "e-commercestore-order-service:latest"
+  "e-commercestore-product-service:latest"
+  "e-commercestore-user-service:latest"
   #"myapp:latest"
   #"python:3.4-alpine"        # deliberately old — FAIL dikhane ke liye
   "alpine:latest"            # clean — PASS dikhane ke liye
@@ -32,7 +37,7 @@ echo "  FULL PIPELINE TEST — ${#IMAGES[@]} images"
 echo "════════════════════════════════════════════"
 
 for IMG in "${IMAGES[@]}"; do
-    SAFE=$(echo "$IMG" | tr '/:' '__')
+    SAFE=$(printf '%s' "$IMG" | tr '/:,' '__')
     REPORT_PATH="reports/$SAFE.json"
     REPORT_FILES+=("$REPORT_PATH")
     echo ""

@@ -150,9 +150,9 @@ services:
     container_name: frontend-service
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3005:3005"
     environment:
-      - PORT=3000
+      - PORT=3005
       - NODE_ENV=production
       - REACT_APP_USER_SERVICE_URL=http://$PUBLIC_IP:3001
       - REACT_APP_PRODUCT_SERVICE_URL=http://$PUBLIC_IP:3002
@@ -198,7 +198,7 @@ docker ps
 
 echo "======================================="
 echo " Bootstrap Complete!"
-echo " Frontend : http://$PUBLIC_IP:3000"
+echo " Frontend : http://$PUBLIC_IP:3005"
 echo " User API : http://$PUBLIC_IP:3001"
 echo " Product  : http://$PUBLIC_IP:3002"
 echo " Cart     : http://$PUBLIC_IP:3003"

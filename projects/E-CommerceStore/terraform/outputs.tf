@@ -14,7 +14,7 @@ output "public_dns" {
 
 output "frontend_url" {
   description = "Frontend application URL"
-  value       = "http://${aws_instance.app.public_ip}:3000"
+  value       = "http://${aws_instance.app.public_ip}:3005"
 }
 
 output "user_service_url" {
