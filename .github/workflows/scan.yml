@@ -48,3 +48,13 @@ jobs:
         with:
           name: vulnerability-report
           path: scan-report.json
+
+      # NOTE: SONAR_HOST_URL must point at a SonarQube reachable from GitHub's
+      # cloud runners — a container only published on localhost (as set up in
+      # docker-compose.yml) will NOT work here. Either tunnel it (same ngrok
+      # pattern already used for the Jenkins webhook) or point this at SonarCloud.
+      - name: Code quality (SonarQube)
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

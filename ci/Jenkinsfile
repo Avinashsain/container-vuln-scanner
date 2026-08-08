@@ -35,6 +35,14 @@ pipeline {
             }
         }
 
+        stage('Code Quality (SonarQube)') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'sonar-scanner -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
+                }
+            }
+        }
+
         stage('Push to Registry') {
             steps {
                 echo '✅ Scan passed — image is safe.'
