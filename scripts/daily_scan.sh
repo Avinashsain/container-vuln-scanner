@@ -16,7 +16,7 @@ fi
 
 mkdir -p "${REPO_ROOT}/reports"
 
-IMAGES=("myapp:latest" "nginx:latest" "alpine:latest")
+IMAGES=("nginx:latest" "alpine:latest")
 REPORT_FILES=()
 
 for IMG in "${IMAGES[@]}"; do
