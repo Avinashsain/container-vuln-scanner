@@ -42,7 +42,7 @@ RUN chown -R appuser:appgroup /app/adminService
 USER appuser
 
 ENV NODE_ENV=production
-EXPOSE 3003
+EXPOSE 4003
 
 # Was guessed as server.js — confirmed via package.json that "start" runs
 # node index.js, so matching that here since npm (and its "start" script)

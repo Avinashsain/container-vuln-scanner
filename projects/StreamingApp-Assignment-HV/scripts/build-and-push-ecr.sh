@@ -22,12 +22,12 @@ ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 
 # Frontend runtime URLs (React bakes these in at BUILD time).
 # Defaults are placeholders for the first deploy (Run 1); pass real ELB URLs for Run 2.
-FE_AUTH="${FE_AUTH:-http://placeholder:3001/api}"
-FE_STREAM="${FE_STREAM:-http://placeholder:3002/api}"
-FE_STREAM_PUB="${FE_STREAM_PUB:-http://placeholder:3002}"
-FE_ADMIN="${FE_ADMIN:-http://placeholder:3003/api/admin}"
-FE_CHAT="${FE_CHAT:-http://placeholder:3004/api/chat}"
-FE_CHAT_SOCK="${FE_CHAT_SOCK:-http://placeholder:3004}"
+FE_AUTH="${FE_AUTH:-http://placeholder:4001/api}"
+FE_STREAM="${FE_STREAM:-http://placeholder:4002/api}"
+FE_STREAM_PUB="${FE_STREAM_PUB:-http://placeholder:4002}"
+FE_ADMIN="${FE_ADMIN:-http://placeholder:4003/api/admin}"
+FE_CHAT="${FE_CHAT:-http://placeholder:4004/api/chat}"
+FE_CHAT_SOCK="${FE_CHAT_SOCK:-http://placeholder:4004}"
 
 echo ">> Logging in to ${ECR_REGISTRY}"
 aws ecr get-login-password --region "${AWS_REGION}" \

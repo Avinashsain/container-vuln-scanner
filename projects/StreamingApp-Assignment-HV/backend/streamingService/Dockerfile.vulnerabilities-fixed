@@ -43,7 +43,7 @@ RUN chown -R appuser:appgroup /app/streamingService
 USER appuser
 
 ENV NODE_ENV=production
-EXPOSE 3002
+EXPOSE 4002
 
 # Was guessed as server.js — confirmed via package.json that "start" runs
 # node index.js, so matching that here since npm (and its "start" script)

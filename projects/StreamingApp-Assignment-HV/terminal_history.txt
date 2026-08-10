@@ -1,7 +1,7 @@
     7  aws configure
     8  aws sts get-caller-identity\n
-   18  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"green"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3200,"nodePort":30080}]}}'
-   19  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"blue"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3100,"nodePort":30080}]}}'
+   18  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"green"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3200,"nodePort":40080}]}}'
+   19  kubectl patch svc frontend-active -n blue-green \\n  --type=merge \\n  -p '{"spec":{"selector":{"app":"frontend","version":"blue"},\n       "ports":[{"protocol":"TCP","port":80,"targetPort":3100,"nodePort":40080}]}}'
    20  kubectl get svc frontend-active -n blue-green \\n  -o jsonpath='{.spec.selector.version}'
    21  kubectl rollout status deployment/frontend-green -n blue-green\n
    24  kubectl logs -n blue-green -l version=green -f --tail=50\n
@@ -483,7 +483,7 @@
  1127  kubectl -n streamingapp get pods
  1128  kubectl -n streamingapp get pods | grep mongo
  1129  kubectl -n streamingapp exec -it mongo-0 -- mongosh\n
- 1130  kubectl -n streamingapp exec deploy/streaming -- sh -c "grep -rn 'localhost:3002\|PUBLIC_URL\|BASE_URL' /app/streamingService --include='*.js' -l | head -3"\n
+ 1130  kubectl -n streamingapp exec deploy/streaming -- sh -c "grep -rn 'localhost:4002\|PUBLIC_URL\|BASE_URL' /app/streamingService --include='*.js' -l | head -3"\n
  1131  kubectl -n streamingapp exec deploy/streaming -- sh -c "grep -rn 'thumbnailUrl\|PUBLIC_URL\|BASE_URL' /app/streamingService/controllers /app/streamingService/util 2>/dev/null | grep -v node_modules | head -10"\n
  1132  kubectl -n streamingapp get pods
  1133  NODE_ROLE=$(aws eks describe-nodegroup --cluster-name streamingapp-eks \\n  --nodegroup-name workers --region us-east-1 \\n  --query 'nodegroup.nodeRole' --output text | awk -F/ '{print $2}')

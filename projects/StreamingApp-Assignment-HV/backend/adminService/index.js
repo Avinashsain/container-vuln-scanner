@@ -4,8 +4,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3003;
-const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3008')
+const PORT = process.env.PORT || 4003;
+const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:4008')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);

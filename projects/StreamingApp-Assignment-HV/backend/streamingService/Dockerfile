@@ -7,6 +7,6 @@ RUN npm install --production
 
 COPY streamingService/. ./
 ENV NODE_ENV=production
-EXPOSE 3002
+EXPOSE 4002
 
 CMD ["npm", "run", "start"]

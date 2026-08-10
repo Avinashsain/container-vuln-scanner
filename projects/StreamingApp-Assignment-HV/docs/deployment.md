@@ -17,7 +17,7 @@ git fetch upstream && git merge upstream/main && git push origin main
 
 ## Phase 2 — Containerization
 
-The app ships Dockerfiles for all five components. Build contexts differ per service (streaming/admin/chat share `backend/` as context; auth uses `backend/authService`). Verified locally with `docker-compose up --build` — frontend on :4000, services on :3001–:3004, MongoDB on :27017.
+The app ships Dockerfiles for all five components. Build contexts differ per service (streaming/admin/chat share `backend/` as context; auth uses `backend/authService`). Verified locally with `docker-compose up --build` — frontend on :4000, services on :4001–:4004, MongoDB on :27017.
 
 ![docker ps with all containers running](../screenshots/local-service/docker-ps/running-containers.png)
 ![App login page on localhost](../screenshots/local-service/page-1.png)
@@ -169,5 +169,5 @@ The full 11-issue journal (with root causes) is in the [README](../README.md#tro
 | Helm vs HPA conflict over `.spec.replicas` | Removed `replicas` from deployment templates |
 | Frontend API calls hit placeholder URLs | Run 2 rebuild with real ELB URLs (verified with `git show HEAD:Jenkinsfile`) |
 | CORS errors in browser console | Set `env.clientUrls` in values.yaml to the frontend ELB URL |
-| Thumbnails pointed at localhost:3002 | `STREAMING_PUBLIC_URL` env var added to Helm values |
+| Thumbnails pointed at localhost:4002 | `STREAMING_PUBLIC_URL` env var added to Helm values |
 | SNS publish `NoCredentials` in post-actions | Wrapped publishes in `withCredentials` inside `post{}` |

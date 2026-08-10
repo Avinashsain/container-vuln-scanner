@@ -14,10 +14,10 @@ flowchart LR
   J -->|helm upgrade| EKS[Amazon EKS streamingapp-eks]
   subgraph EKS Cluster - 2x t3.medium managed nodes
     FE[frontend React+nginx :80]
-    AU[authService :3001]
-    ST[streamingService :3002]
-    AD[adminService :3003]
-    CH[chatService :3004]
+    AU[authService :4001]
+    ST[streamingService :4002]
+    AD[adminService :4003]
+    CH[chatService :4004]
     M[(MongoDB StatefulSet :27017)]
     AU --> M
     ST --> M
@@ -39,10 +39,10 @@ flowchart LR
 | Component | Tech | Port | Kubernetes object | Exposure |
 |---|---|---|---|---|
 | frontend | React build served by nginx | 80 | Deployment + HPA | LoadBalancer (ELB) |
-| authService | Node.js/Express — signup, login, JWT | 3001 | Deployment + HPA | LoadBalancer |
-| streamingService | Node.js/Express — catalogue, S3 playback | 3002 | Deployment + HPA | LoadBalancer |
-| adminService | Node.js/Express — asset management, uploads | 3003 | Deployment + HPA | LoadBalancer |
-| chatService | Node.js/Express + Socket.IO — live chat | 3004 | Deployment + HPA | LoadBalancer |
+| authService | Node.js/Express — signup, login, JWT | 4001 | Deployment + HPA | LoadBalancer |
+| streamingService | Node.js/Express — catalogue, S3 playback | 4002 | Deployment + HPA | LoadBalancer |
+| adminService | Node.js/Express — asset management, uploads | 4003 | Deployment + HPA | LoadBalancer |
+| chatService | Node.js/Express + Socket.IO — live chat | 4004 | Deployment + HPA | LoadBalancer |
 | MongoDB | mongo:6 | 27017 | StatefulSet + 5Gi EBS PVC | ClusterIP (internal only) |
 
 ## Key design decisions

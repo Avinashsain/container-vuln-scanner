@@ -7,6 +7,6 @@ RUN npm install --production
 
 COPY adminService/. ./
 ENV NODE_ENV=production
-EXPOSE 3003
+EXPOSE 4003
 
 CMD ["npm", "run", "start"]

@@ -8,6 +8,6 @@ RUN npm install --production
 COPY . .
 
 ENV NODE_ENV=production
-EXPOSE 3001
+EXPOSE 4001
 
 CMD ["npm", "run", "start"]

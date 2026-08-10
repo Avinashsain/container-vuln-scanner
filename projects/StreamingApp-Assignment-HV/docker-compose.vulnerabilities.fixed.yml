@@ -33,18 +33,18 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      PORT: 3001
+      PORT: 4001
       # Updated to include the auth credentials mongo now requires.
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
       # Keep the browser-facing services pinned to the actual frontend port.
-      CLIENT_URLS: http://localhost:3008
+      CLIENT_URLS: http://localhost:4008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
     ports:
-      - "${AUTH_PORT:-3001}:3001"
+      - "${AUTH_PORT:-4001}:4001"
 
   streaming:
     build:
@@ -54,18 +54,18 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      PORT: 3002
+      PORT: 4002
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: http://localhost:3008
+      CLIENT_URLS: http://localhost:4008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
       AWS_CDN_URL: ${AWS_CDN_URL:-}
-      STREAMING_PUBLIC_URL: ${STREAMING_PUBLIC_URL:-http://localhost:3002}
+      STREAMING_PUBLIC_URL: ${STREAMING_PUBLIC_URL:-http://localhost:4002}
     ports:
-      - "${STREAMING_PORT:-3002}:3002"
+      - "${STREAMING_PORT:-4002}:4002"
 
   admin:
     build:
@@ -75,17 +75,17 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      PORT: 3003
+      PORT: 4003
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: http://localhost:3008
+      CLIENT_URLS: http://localhost:4008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_REGION: ${AWS_REGION:-ap-south-1}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
       AWS_CDN_URL: ${AWS_CDN_URL:-}
     ports:
-      - "${ADMIN_PORT:-3003}:3003"
+      - "${ADMIN_PORT:-4003}:4003"
 
   chat:
     build:
@@ -95,31 +95,31 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      PORT: 3004
+      PORT: 4004
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      CLIENT_URLS: http://localhost:3008
+      CLIENT_URLS: http://localhost:4008
     ports:
-      - "${CHAT_PORT:-3004}:3004"
+      - "${CHAT_PORT:-4004}:4004"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.vulnerabilities-fixed
       args:
-        REACT_APP_AUTH_API_URL: ${REACT_APP_AUTH_API_URL:-http://localhost:3001/api}
-        REACT_APP_STREAMING_API_URL: ${REACT_APP_STREAMING_API_URL:-http://localhost:3002/api}
-        REACT_APP_STREAMING_PUBLIC_URL: ${REACT_APP_STREAMING_PUBLIC_URL:-http://localhost:3002}
-        REACT_APP_ADMIN_API_URL: ${REACT_APP_ADMIN_API_URL:-http://localhost:3003/api/admin}
-        REACT_APP_CHAT_API_URL: ${REACT_APP_CHAT_API_URL:-http://localhost:3004/api/chat}
-        REACT_APP_CHAT_SOCKET_URL: ${REACT_APP_CHAT_SOCKET_URL:-http://localhost:3004}
+        REACT_APP_AUTH_API_URL: ${REACT_APP_AUTH_API_URL:-http://localhost:4001/api}
+        REACT_APP_STREAMING_API_URL: ${REACT_APP_STREAMING_API_URL:-http://localhost:4002/api}
+        REACT_APP_STREAMING_PUBLIC_URL: ${REACT_APP_STREAMING_PUBLIC_URL:-http://localhost:4002}
+        REACT_APP_ADMIN_API_URL: ${REACT_APP_ADMIN_API_URL:-http://localhost:4003/api/admin}
+        REACT_APP_CHAT_API_URL: ${REACT_APP_CHAT_API_URL:-http://localhost:4004/api/chat}
+        REACT_APP_CHAT_SOCKET_URL: ${REACT_APP_CHAT_SOCKET_URL:-http://localhost:4004}
     depends_on:
       - auth
       - streaming
       - admin
       - chat
     ports:
-      - "3008:80"
+      - "4008:80"
 
 volumes:
   mongo-data:

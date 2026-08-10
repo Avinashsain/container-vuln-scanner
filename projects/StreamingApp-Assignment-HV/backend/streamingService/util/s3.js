@@ -25,7 +25,7 @@ const buildPublicUrl = (key) => {
     return key;
   }
 
-  const base = process.env.STREAMING_PUBLIC_URL?.replace(/\/$/, '') || 'http://localhost:3002';
+  const base = process.env.STREAMING_PUBLIC_URL?.replace(/\/$/, '') || 'http://localhost:4002';
   return `${base}/api/streaming/thumbnails/${encodeURI(key)}`;
 };
 

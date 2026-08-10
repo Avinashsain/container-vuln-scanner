@@ -39,10 +39,10 @@ flowchart LR
   J -->|helm upgrade| EKS[Amazon EKS<br/>streamingapp-eks]
   subgraph EKS Cluster - 2x t3.medium
     FE[frontend :80]
-    AU[auth :3001]
-    ST[streaming :3002]
-    AD[admin :3003]
-    CH[chat :3004]
+    AU[auth :4001]
+    ST[streaming :4002]
+    AD[admin :4003]
+    CH[chat :4004]
     M[(MongoDB<br/>StatefulSet + EBS)]
     AU & ST & AD & CH --> M
   end
@@ -81,10 +81,10 @@ flowchart LR
 | Service | Port | Responsibility | ECR Repository |
 |---|---|---|---|
 | frontend | 80 | React SPA, login/catalogue/player UI | `streamingapp/frontend` |
-| authService | 3001 | Registration, login, JWT issuance, roles | `streamingapp/auth` |
-| streamingService | 3002 | Video catalogue, S3 streaming endpoints | `streamingapp/streaming` |
-| adminService | 3003 | Video upload & asset management (admin role) | `streamingapp/admin` |
-| chatService | 3004 | Live chat via websockets | `streamingapp/chat` |
+| authService | 4001 | Registration, login, JWT issuance, roles | `streamingapp/auth` |
+| streamingService | 4002 | Video catalogue, S3 streaming endpoints | `streamingapp/streaming` |
+| adminService | 4003 | Video upload & asset management (admin role) | `streamingapp/admin` |
+| chatService | 4004 | Live chat via websockets | `streamingapp/chat` |
 | MongoDB | 27017 | Shared database (internal only, no ELB) | — (in-cluster) |
 
 **Docker build contexts** (important — they differ per service):
@@ -157,10 +157,10 @@ docker-compose up --build
 | Service | URL |
 |---|---|
 | Frontend | http://localhost:3000 |
-| Auth API | http://localhost:3001 |
-| Streaming API | http://localhost:3002 |
-| Admin API | http://localhost:3003 |
-| Chat API | http://localhost:3004 |
+| Auth API | http://localhost:4001 |
+| Streaming API | http://localhost:4002 |
+| Admin API | http://localhost:4003 |
+| Chat API | http://localhost:4004 |
 | MongoDB | mongodb://localhost:27017 |
 
 > Inside containers, services reach the database as `mongodb://mongo:27017/streamingapp` (Docker network DNS, not localhost).
@@ -337,7 +337,7 @@ Documenting these was half the learning. Every issue below actually occurred dur
 | 6 | Mongo crash-looping after adding health probes | `mongosh` exec probe exceeded default 1s timeout → liveness kills | Switched to lightweight `tcpSocket` probes with `timeoutSeconds: 5` |
 | 7 | Frontend API calls hit `PASTE-...-HOSTNAME` placeholders | Real ELB URLs never actually committed (verified with `git show HEAD:Jenkinsfile`) | Committed real hostnames; added a pre-push `grep` verification habit |
 | 8 | `{"success":false,"message":"Admin privileges required"}` after DB role update | JWT carries the role from login time; old token still said `user` | Log out / clear localStorage → fresh login mints an admin token |
-| 9 | Thumbnails pointed at `http://localhost:3002/...` | `STREAMING_PUBLIC_URL` env var unset; code defaults to localhost (`util/s3.js`) | Added `STREAMING_PUBLIC_URL` to Helm values/env pointing at the streaming ELB |
+| 9 | Thumbnails pointed at `http://localhost:4002/...` | `STREAMING_PUBLIC_URL` env var unset; code defaults to localhost (`util/s3.js`) | Added `STREAMING_PUBLIC_URL` to Helm values/env pointing at the streaming ELB |
 | 10 | SNS publish failed: `NoCredentials` in post-actions | Jenkins `post {}` runs outside stage `withCredentials` scope | Wrapped SNS publishes in their own `withCredentials` block |
 | 11 | Browser `ERR_TIMED_OUT` while `curl` returned 200 | Chrome silently upgraded http→https; ELB listens on 80 only | Explicit `http://` in incognito window |
 

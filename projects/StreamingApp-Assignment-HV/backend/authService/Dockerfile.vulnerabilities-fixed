@@ -41,7 +41,7 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 ENV NODE_ENV=production
-EXPOSE 3001
+EXPOSE 4001
 
 # Was `npm run start` — npm is removed above, so invoke the entry point
 # directly, per package.json's "start": "node index.js".
