@@ -27,11 +27,11 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 # Expose port
-EXPOSE 9000
+EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-  CMD wget -qO- http://localhost:9000/health || exit 1
+  CMD wget -qO- http://localhost:8000/health || exit 1
 
 # Start the app
 CMD ["node", "server.js"]

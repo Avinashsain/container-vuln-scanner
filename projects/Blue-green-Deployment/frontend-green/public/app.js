@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       
       try {
-        const response = await fetch('http://localhost:9000/api/users', {
+        const response = await fetch('http://localhost:8000/api/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -196,6 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
       // Auto hide after 5 seconds
       setTimeout(() => {
         messageContainer.style.display = 'none';
-      }, 9000);
+      }, 8000);
     }
   });

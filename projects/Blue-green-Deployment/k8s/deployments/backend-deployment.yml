@@ -4,7 +4,7 @@ metadata:
   name: backend-config
   namespace: blue-green
 data:
-  PORT: "9000"
+  PORT: "8000"
   MONGO_URI: "mongodb://mongodb:27017/userdb"
 
 ---
@@ -30,7 +30,7 @@ spec:
           image: avinashsain65/blue-green-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 9000
+            - containerPort: 8000
           envFrom:
             - configMapRef:
                 name: backend-config
@@ -44,7 +44,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: 9000
+              port: 8000
             initialDelaySeconds: 20
             periodSeconds: 15
             timeoutSeconds: 5
@@ -52,7 +52,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /health
-              port: 9000
+              port: 8000
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5

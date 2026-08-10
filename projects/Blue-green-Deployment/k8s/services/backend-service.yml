@@ -10,8 +10,8 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 9000
-      targetPort: 9000
+      port: 8000
+      targetPort: 8000
   type: ClusterIP
 
 ---
@@ -27,7 +27,7 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 9000
-      targetPort: 9000
+      port: 8000
+      targetPort: 8000
       nodePort: 30500
   type: NodePort

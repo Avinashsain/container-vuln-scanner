@@ -72,12 +72,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:9000/api/users",
+              "raw": "http://localhost:8000/api/users",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "9000",
+              "port": "8000",
               "path": [
                 "api",
                 "users"
@@ -92,12 +92,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:9000/health",
+              "raw": "http://localhost:8000/health",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "9000",
+              "port": "8000",
               "path": [
                 "health"
               ]

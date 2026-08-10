@@ -50,7 +50,7 @@ This project demonstrates a **blue-green deployment strategy** for a full-stack 
 | Service | Port | Kubernetes Type | Docker Hub Image |
 |---|---|---|---|
 | MongoDB | 27017 | ClusterIP | `mongo:7.0` |
-| Backend API | 9000 | ClusterIP + NodePort | `avinashsain65/blue-green-backend:latest` |
+| Backend API | 8000 | ClusterIP + NodePort | `avinashsain65/blue-green-backend:latest` |
 | Frontend Blue (Basic) | 3100 | NodePort :30100 | `avinashsain65/blue-green-frontend-blue:latest` |
 | Frontend Green (Enhanced) | 3200 | NodePort :30200 | `avinashsain65/blue-green-frontend-green:latest` |
 | Frontend Active (Live) | 80 | NodePort :30080 | ← selector-switched |
@@ -78,7 +78,7 @@ This project demonstrates a **blue-green deployment strategy** for a full-stack 
                         │      └──────┬───────┘                   │
                         │             ▼                            │
                         │       ┌─────────┐                       │
-                        │       │ backend │  :9000                 │
+                        │       │ backend │  :8000                 │
                         │       └────┬────┘                       │
                         │            ▼                            │
                         │       ┌─────────┐                       │
@@ -105,7 +105,7 @@ Blue-green-Deployment/
 ├── backend/
 │   ├── Dockerfile
 │   ├── .dockerignore
-│   ├── server.js               # Express API, port 9000
+│   ├── server.js               # Express API, port 8000
 │   ├── package.json
 │   ├── routes/users.js
 │   └── models/user.js
@@ -204,7 +204,7 @@ sudo systemctl start mongod
 ### Step 3 — Configure Environment
 
 ```bash
-echo "PORT=9000
+echo "PORT=8000
 MONGO_URI=mongodb://localhost:27017/userdb" > backend/.env
 
 echo "PORT=3100" > frontend-blue/.env
@@ -216,7 +216,7 @@ echo "PORT=3200" > frontend-green/.env
 ```bash
 # Terminal 1 — Backend
 cd backend && npm start
-# ✓ Backend server running on port 9000
+# ✓ Backend server running on port 8000
 
 # Terminal 2 — Blue Frontend
 cd frontend-blue && npm start
@@ -231,23 +231,23 @@ cd frontend-green && npm start
 
 ```bash
 # Backend health check
-curl http://localhost:9000/health
+curl http://localhost:8000/health
 # {"status":"ok","message":"Backend API is running"}
 
 # Register a test user
-curl -s -X POST http://localhost:9000/api/users \
+curl -s -X POST http://localhost:8000/api/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Alice","surname":"Smith","dob":"1990-01-15","job":"Engineer",
        "place":"London","interests":["coding"],"knownLanguages":["JavaScript"],
        "registeredFrom":"basic"}'
 
 # Check counts
-curl http://localhost:9000/api/users/count
+curl http://localhost:8000/api/users/count
 ```
 
 | Service | URL |
 |---|---|
-| Backend API | http://localhost:9000/health |
+| Backend API | http://localhost:8000/health |
 | Blue (Basic) Frontend | http://localhost:3100 |
 | Green (Enhanced) Frontend | http://localhost:3200 |
 
@@ -310,7 +310,7 @@ docker compose ps
 
 ```bash
 # Access
-# http://localhost:9000/health   → Backend API
+# http://localhost:8000/health   → Backend API
 # http://localhost:3100          → Blue Frontend
 # http://localhost:3200          → Green Frontend
 ```
@@ -392,7 +392,7 @@ kubectl get svc -n blue-green
 minikube service frontend-active -n blue-green --url
 
 # Expose backend for testing
-kubectl port-forward svc/backend -n blue-green 9000:9000
+kubectl port-forward svc/backend -n blue-green 8000:8000
 ```
 
 ### Health Checks Configured
@@ -514,14 +514,14 @@ kubectl logs -n blue-green -l version=green -f --tail=50
 
 ### Challenge 2 — Port conflicts on host machine
 **Problem:** Port 5000 (AirPlay), 6000 (browser-blocked unsafe port), 8080 (Jenkins) all in use.  
-**Solution:** Settled on port **9000** for the backend — safe for browsers and free on the host.
+**Solution:** Settled on port **8000** for the backend — safe for browsers and free on the host.
 
 ### Challenge 3 — Backend probes hitting wrong port
 **Problem:** Kubernetes liveness/readiness probes were hitting port 6000 instead of the container port, causing `CrashLoopBackOff`.  
 **Solution:** Deleted the old deployment and reapplied the corrected manifest with `kubectl delete deployment backend -n blue-green && kubectl apply -f k8s/deployments/backend-deployment.yml`.
 
 ### Challenge 4 — Old Docker image cached in running pods
-**Problem:** Frontend still called `localhost:5000` despite source file showing `9000` — old image still running.  
+**Problem:** Frontend still called `localhost:5000` despite source file showing `8000` — old image still running.  
 **Solution:** Forced full rebuild with `docker compose build --no-cache`, then `kubectl rollout restart`.
 
 ### Challenge 5 — Port mismatch during blue-green switch
@@ -565,7 +565,7 @@ kubectl get pods -n blue-green
 kubectl get svc  -n blue-green
 
 # Expose backend
-kubectl port-forward svc/backend -n blue-green 9000:9000
+kubectl port-forward svc/backend -n blue-green 8000:8000
 
 # ── Blue-Green Switch ───────────────────────────────
 ./switch.sh status   # check current live version
