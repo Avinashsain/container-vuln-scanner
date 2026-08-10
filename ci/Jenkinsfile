@@ -38,21 +38,33 @@ pipeline {
         stage('Code Quality (SonarQube)') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh 'sonar-scanner -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
+                    withSonarQubeEnv('sonarqube-server') {   // name must match Manage Jenkins → System → SonarQube servers
+                        sh 'sonar-scanner -Dsonar.host.url=https://eclair-account-chest.ngrok-free.dev -Dsonar.token=$SONAR_TOKEN'
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
 
         stage('Push to Registry') {
             steps {
-                echo '✅ Scan passed — image is safe.'
+                echo '✅ Scan + quality gate passed — image is safe.'
+                // sh 'docker tag $IMAGE_NAME your-registry/myapp:${BUILD_NUMBER}'
+                // sh 'docker push your-registry/myapp:${BUILD_NUMBER}'
             }
         }
     }
 
     post {
         failure {
-            echo '🚨 Build blocked: vulnerabilities exceed the allowed threshold!'
+            echo '🚨 Build blocked: vulnerabilities or quality gate failure!'
         }
         always {
             archiveArtifacts artifacts: 'scan-report.*', allowEmptyArchive: true
