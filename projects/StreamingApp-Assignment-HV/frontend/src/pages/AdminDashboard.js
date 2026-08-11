@@ -18,7 +18,9 @@ import {
   VideoLibrary,
   CloudUpload,
   ExitToApp,
+  ArrowBack,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { VideoUploadForm } from '../components/admin/VideoUploadForm';
 import { VideoManagement } from '../components/admin/VideoManagement';
@@ -29,6 +31,7 @@ export const AdminDashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentView, setCurrentView] = useState('manage');
   const theme = useTheme();
+  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleDrawerToggle = () => {
@@ -49,6 +52,13 @@ export const AdminDashboard = () => {
       </Toolbar>
       <Divider />
       <List>
+        <ListItem button onClick={() => navigate('/')}>
+          <ListItemIcon>
+            <ArrowBack />
+          </ListItemIcon>
+          <ListItemText primary="Back to Website" />
+        </ListItem>
+        <Divider />
         {menuItems.map((item) => (
           <ListItem
             button

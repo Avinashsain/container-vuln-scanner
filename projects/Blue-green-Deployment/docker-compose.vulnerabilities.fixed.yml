@@ -1,6 +1,3 @@
-# Note: the top-level `version:` key is deprecated in the current Compose
-# Specification and is ignored (with a warning) by Compose v2 — dropped it.
-
 services:
 
   # ── MongoDB ──────────────────────────────────
@@ -9,24 +6,14 @@ services:
     container_name: mongodb
     restart: unless-stopped
     environment:
-      # Added root credentials — the original had none, meaning anyone who
-      # could reach this container had full unauthenticated DB access.
-      # Values come from a local .env file (see note below), not hardcoded.
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: userdb
-    # Removed `ports: "27017:27017"`. The backend already reaches Mongo via
-    # the internal app-network using the service name (mongodb:27017), so
-    # publishing this to the host was unnecessary attack surface — anyone
-    # who could reach the host on 27017 could hit the database directly.
     volumes:
       - mongo_data:/data/db
     networks:
       - app-network
     healthcheck:
-      # Updated to authenticate the ping using the same root credentials,
-      # since auth is now enabled and the old unauthenticated ping would
-      # start failing once credentials are required.
       test: ["CMD", "mongosh", "-u", "${MONGO_ROOT_USER}", "-p", "${MONGO_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
       interval: 15s
       timeout: 10s
@@ -42,7 +29,6 @@ services:
     restart: unless-stopped
     environment:
       PORT: 8000
-      # Updated to include the auth credentials now required by mongodb above.
       MONGO_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/userdb?authSource=admin
     ports:
       - "8000:8000"
@@ -106,7 +92,6 @@ services:
       retries: 3
       start_period: 10s
 
-# ─────────────────────────────────────────────
 volumes:
   mongo_data:
     driver: local

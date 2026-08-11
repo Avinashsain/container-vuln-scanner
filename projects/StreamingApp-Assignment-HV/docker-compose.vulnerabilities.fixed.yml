@@ -3,22 +3,12 @@ services:
     image: mongo:6
     restart: unless-stopped
     environment:
-      # Added — the original had no credentials at all, meaning anyone who
-      # could reach this container had full unauthenticated DB access.
-      # Values come from a local .env file, not hardcoded here.
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB:-streamingapp}
-    # Removed the host port mapping (was "27017:27017"). Every backend
-    # service already reaches Mongo internally via the compose network
-    # using the service name (mongo:27017) — publishing it to the host
-    # was unnecessary exposure of an unauthenticated (until now) database
-    # port to anything else running on your machine/network.
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      # Added so dependent services wait for Mongo to actually be ready
-      # to accept connections, not just for its container to have started.
       test: ["CMD", "mongosh", "-u", "${MONGO_ROOT_USER}", "-p", "${MONGO_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 10s
@@ -34,10 +24,8 @@ services:
         condition: service_healthy
     environment:
       PORT: 4001
-      # Updated to include the auth credentials mongo now requires.
       MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB:-streamingapp}?authSource=admin}
       JWT_SECRET: ${JWT_SECRET:-changeme}
-      # Keep the browser-facing services pinned to the actual frontend port.
       CLIENT_URLS: http://localhost:4008
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
@@ -123,4 +111,3 @@ services:
 
 volumes:
   mongo-data:
-  
