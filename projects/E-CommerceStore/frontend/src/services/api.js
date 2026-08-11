@@ -2,10 +2,10 @@ import axios from 'axios';
 
 // API base URLs for each microservice
 const API_GATEWAYS = {
-  user: process.env.REACT_APP_USER_SERVICE_URL || 'http://localhost:3001',
-  product: process.env.REACT_APP_PRODUCT_SERVICE_URL || 'http://localhost:3002',
-  cart: process.env.REACT_APP_CART_SERVICE_URL || 'http://localhost:3003',
-  order: process.env.REACT_APP_ORDER_SERVICE_URL || 'http://localhost:3004',
+  user: process.env.REACT_APP_USER_SERVICE_URL || 'http://localhost:5001',
+  product: process.env.REACT_APP_PRODUCT_SERVICE_URL || 'http://localhost:5002',
+  cart: process.env.REACT_APP_CART_SERVICE_URL || 'http://localhost:5003',
+  order: process.env.REACT_APP_ORDER_SERVICE_URL || 'http://localhost:5004',
 };
 
 // Create axios instances for each service

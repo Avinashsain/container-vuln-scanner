@@ -55,8 +55,8 @@ resource "aws_security_group" "app" {
   }
   ingress {
     description = "Frontend"
-    from_port   = 3005
-    to_port     = 3005
+    from_port   = 5005
+    to_port     = 5005
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -69,8 +69,8 @@ resource "aws_security_group" "app" {
   }
   ingress {
     description = "Backend services"
-    from_port   = 3001
-    to_port     = 3004
+    from_port   = 5001
+    to_port     = 5004
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -30,11 +30,11 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
 
 | Service | Port | Description |
 |---|---|---|
-| Frontend | 3005 | React.js UI |
-| User Service | 3001 | Auth, JWT, user profiles |
-| Product Service | 3002 | Product catalog, categories, inventory |
-| Cart Service | 3003 | Cart management, validation |
-| Order Service | 3004 | Orders, payments, shipping |
+| Frontend | 5005 | React.js UI |
+| User Service | 5001 | Auth, JWT, user profiles |
+| Product Service | 5002 | Product catalog, categories, inventory |
+| Cart Service | 5003 | Cart management, validation |
+| Order Service | 5004 | Orders, payments, shipping |
 
 ---
 
@@ -47,7 +47,7 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
                  ┌─────────────────────┐
                  │   AWS Security Group │
                  │  Ports: 22, 80,      │
-                 │  3005, 3001–3004     │
+                 │  5005, 5001–5004     │
                  └─────────┬───────────┘
                             │
                             ▼
@@ -64,11 +64,11 @@ A microservices-based e-commerce application with 5 Dockerized services deployed
               │   (bridge)                │
               │                           │
      ┌────────┴──────────────────────┐    │
-     │  frontend-service  :3005      │    │
-     │  user-service      :3001      │    │
-     │  product-service   :3002      │    │
-     │  cart-service      :3003      │    │
-     │  order-service     :3004      │    │
+     │  frontend-service  :5005      │    │
+     │  user-service      :5001      │    │
+     │  product-service   :5002      │    │
+     │  cart-service      :5003      │    │
+     │  order-service     :5004      │    │
      └───────────────────────────────┘    │
               │                           │
               ▼                           │
@@ -157,7 +157,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 3001
+EXPOSE 5001
 CMD ["node", "server.js"]
 ```
 
@@ -233,7 +233,7 @@ Resources created:
 | `aws_subnet` | subnet-05ccc71df59a18393 | 10.0.1.0/24, ap-south-1a |
 | `aws_internet_gateway` | igw-08ababb76b9e84237 | Attached to VPC |
 | `aws_route_table` | rtb-0eeddaead3d1464e2 | 0.0.0.0/0 → IGW |
-| `aws_security_group` | sg-05862941850827abf | Ports 22,80,3005-3004 |
+| `aws_security_group` | sg-05862941850827abf | Ports 22,80,5005-5004 |
 | `aws_key_pair` | ecommerce-store-key | SSH access |
 | `aws_instance` | i-095c5bd1a20a45eab | t3.medium, Ubuntu 22.04 |
 
@@ -243,8 +243,8 @@ Resources created:
 |---|---|---|---|
 | Inbound | 22 | Your IP | SSH access |
 | Inbound | 80 | 0.0.0.0/0 | HTTP |
-| Inbound | 3005 | 0.0.0.0/0 | Frontend |
-| Inbound | 3001-3004 | 0.0.0.0/0 | Backend services |
+| Inbound | 5005 | 0.0.0.0/0 | Frontend |
+| Inbound | 5001-5004 | 0.0.0.0/0 | Backend services |
 | Outbound | All | 0.0.0.0/0 | All traffic |
 
 ### user_data.sh — EC2 Bootstrap
@@ -272,7 +272,7 @@ The Postman collection and environment files are included in the `postman/` fold
 
 ### API Endpoints
 
-#### Auth (User Service — port 3001)
+#### Auth (User Service — port 5001)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -281,7 +281,7 @@ The Postman collection and environment files are included in the `postman/` fold
 | GET | `/api/users/profile` | Get user profile | Yes |
 | PUT | `/api/users/profile` | Update profile | Yes |
 
-#### Categories (Product Service — port 3002)
+#### Categories (Product Service — port 5002)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -290,7 +290,7 @@ The Postman collection and environment files are included in the `postman/` fold
 | PUT | `/api/categories/:id` | Update category | Yes |
 | DELETE | `/api/categories/:id` | Delete category | Yes |
 
-#### Products (Product Service — port 3002)
+#### Products (Product Service — port 5002)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -300,7 +300,7 @@ The Postman collection and environment files are included in the `postman/` fold
 | PUT | `/api/products/:id` | Update product | Yes |
 | DELETE | `/api/products/:id` | Soft delete product | Yes |
 
-#### Cart (Cart Service — port 3003)
+#### Cart (Cart Service — port 5003)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -311,7 +311,7 @@ The Postman collection and environment files are included in the `postman/` fold
 | DELETE | `/api/cart/:userId` | Clear cart | Yes |
 | POST | `/api/cart/:userId/validate` | Validate cart stock | Yes |
 
-#### Orders (Order Service — port 3004)
+#### Orders (Order Service — port 5004)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -321,7 +321,7 @@ The Postman collection and environment files are included in the `postman/` fold
 | PUT | `/api/orders/:id/status` | Update order status | Yes |
 | DELETE | `/api/orders/:id` | Cancel order | Yes |
 
-#### Payments (Order Service — port 3004)
+#### Payments (Order Service — port 5004)
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -421,17 +421,17 @@ terraform output
 ```
 
 ```
-cart_service_url    = "http://98.81.52.9:3003"
+cart_service_url    = "http://98.81.52.9:5003"
 ec2_instance_id     = "i-095c5bd1a20a45eab"
-frontend_url        = "http://98.81.52.9:3005"
-order_service_url   = "http://98.81.52.9:3004"
-product_service_url = "http://98.81.52.9:3002"
+frontend_url        = "http://98.81.52.9:5005"
+order_service_url   = "http://98.81.52.9:5004"
+product_service_url = "http://98.81.52.9:5002"
 public_dns          = "ec2-3-237-240-98.compute-1.amazonaws.com"
 public_ip           = "98.81.52.9"
 security_group_id   = "sg-0f0dc4191ceca6f5c"
 ssh_command         = "ssh -i ~/.ssh/id_rsa ubuntu@98.81.52.9"
 subnet_id           = "subnet-0abd1d7edd2b30962"
-user_service_url    = "http://98.81.52.9:3001"
+user_service_url    = "http://98.81.52.9:5001"
 vpc_id              = "vpc-0d527bbc7acbd989c"
 ```
 
@@ -523,23 +523,23 @@ docker ps
 
 ```bash
 # Frontend
-curl http://98.81.52.9:3005
+curl http://98.81.52.9:5005
 # Expected: HTML page "Frontend is Live"
 
 # User Service
-curl http://98.81.52.9:3001/health
+curl http://98.81.52.9:5001/health
 # Expected: {"status":"ok","service":"user-service"}
 
 # Product Service
-curl http://98.81.52.9:3002/health
+curl http://98.81.52.9:5002/health
 # Expected: {"status":"ok","service":"product-service"}
 
 # Cart Service
-curl http://98.81.52.9:3003/health
+curl http://98.81.52.9:5003/health
 # Expected: {"status":"ok","service":"cart-service"}
 
 # Order Service
-curl http://98.81.52.9:3004/health
+curl http://98.81.52.9:5004/health
 # Expected: {"status":"ok","service":"order-service"}
 ```
 
@@ -553,11 +553,11 @@ docker ps
 Expected output:
 ```
 CONTAINER ID  IMAGE                              STATUS         PORTS                   NAMES
-xxxx          avinashsain65/frontend:latest      Up 5 minutes   0.0.0.0:3005->3005/tcp  frontend-service
-xxxx          avinashsain65/user-service:latest  Up 5 minutes   0.0.0.0:3001->3001/tcp  user-service
-xxxx          avinashsain65/product-service      Up 5 minutes   0.0.0.0:3002->3002/tcp  product-service
-xxxx          avinashsain65/cart-service         Up 5 minutes   0.0.0.0:3003->3003/tcp  cart-service
-xxxx          avinashsain65/order-service        Up 5 minutes   0.0.0.0:3004->3004/tcp  order-service
+xxxx          avinashsain65/frontend:latest      Up 5 minutes   0.0.0.0:5005->5005/tcp  frontend-service
+xxxx          avinashsain65/user-service:latest  Up 5 minutes   0.0.0.0:5001->5001/tcp  user-service
+xxxx          avinashsain65/product-service      Up 5 minutes   0.0.0.0:5002->5002/tcp  product-service
+xxxx          avinashsain65/cart-service         Up 5 minutes   0.0.0.0:5003->5003/tcp  cart-service
+xxxx          avinashsain65/order-service        Up 5 minutes   0.0.0.0:5004->5004/tcp  order-service
 ```
 
 ---

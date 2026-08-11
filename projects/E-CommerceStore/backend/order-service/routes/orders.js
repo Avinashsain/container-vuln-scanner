@@ -5,9 +5,9 @@ const Order = require('../models/Order');
 const router = express.Router();
 
 // Service URLs
-const CART_SERVICE_URL = process.env.CART_SERVICE_URL || 'http://localhost:3003';
-const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3002';
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL || 'http://localhost:3001';
+const CART_SERVICE_URL = process.env.CART_SERVICE_URL || 'http://localhost:5003';
+const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:5002';
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL || 'http://localhost:5001';
 
 // Helper function to get cart details
 const getCartDetails = async (userId) => {

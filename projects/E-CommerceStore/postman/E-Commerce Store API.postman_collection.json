@@ -1321,19 +1321,19 @@
   "variable": [
     {
       "key": "user_url",
-      "value": "http://localhost:3001"
+      "value": "http://localhost:5001"
     },
     {
       "key": "product_url",
-      "value": "http://localhost:3002"
+      "value": "http://localhost:5002"
     },
     {
       "key": "cart_url",
-      "value": "http://localhost:3003"
+      "value": "http://localhost:5003"
     },
     {
       "key": "order_url",
-      "value": "http://localhost:3004"
+      "value": "http://localhost:5004"
     },
     {
       "key": "token",

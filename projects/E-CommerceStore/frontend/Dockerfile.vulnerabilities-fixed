@@ -1,58 +1,46 @@
-FROM node:25-alpine
+FROM node:25-alpine AS build
 
-# Confirm this base image tag is intentional — every other service in this
-# project uses node:18-alpine. Jumping to 25 is a large major-version leap
-# (different V8/engine, potential breaking changes for native deps like
-# bcrypt/bcryptjs, mongoose, the AWS SDK). If this was meant to be 18,
-# change the FROM line before building.
-
-# OS package upgrade — same fix applied to every other service: pulls the
-# patched alpine package set instead of whatever shipped in this base layer.
 RUN apk update && apk upgrade --no-cache
-
-# Run as non-root — the original had no user switch, so the app ran as
-# root by default.
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
 COPY package*.json ./
-# --omit=dev instead of a plain `npm install`: skips devDependencies
-# (nodemon, etc.) in the shipped image, matching every other service here.
-RUN npm install --omit=dev
 
-# Requires a .dockerignore in this directory (or at whatever directory is
-# actually this service's build context — check your compose file's
-# `context:` value) excluding .env. Without it, real secrets get copied
-# into this layer and are retrievable from the image indefinitely, even
-# after the file is later removed from the repo. This exact mistake has
-# already leaked AWS credentials twice in this project — don't skip it.
+RUN npm install
+
 COPY . .
 
-# Same npm/npx/corepack/yarn removal as your other services — the
-# container only ever runs the app directly, never npm itself at runtime,
-# so this tooling (and the CVEs living in its own bundled dependencies)
-# has no reason to ship.
-RUN rm -rf \
-      /usr/local/lib/node_modules/npm \
-      /usr/local/lib/node_modules/corepack \
-      /usr/local/bin/npm \
-      /usr/local/bin/npx \
-      /usr/local/bin/corepack \
-      /opt/yarn-v1.22.22 \
-      /usr/local/bin/yarn \
-      /usr/local/bin/yarnpkg
+ARG REACT_APP_USER_SERVICE_URL
+ARG REACT_APP_PRODUCT_SERVICE_URL
+ARG REACT_APP_CART_SERVICE_URL
+ARG REACT_APP_ORDER_SERVICE_URL
 
-RUN chown -R appuser:appgroup /app
+ENV REACT_APP_USER_SERVICE_URL=$REACT_APP_USER_SERVICE_URL \
+    REACT_APP_PRODUCT_SERVICE_URL=$REACT_APP_PRODUCT_SERVICE_URL \
+    REACT_APP_CART_SERVICE_URL=$REACT_APP_CART_SERVICE_URL \
+    REACT_APP_ORDER_SERVICE_URL=$REACT_APP_ORDER_SERVICE_URL
+
+RUN npm run build
+
+
+FROM nginx:1.27-alpine
+
+RUN apk update && apk upgrade --no-cache && \
+    addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+RUN chown -R appuser:appgroup /usr/share/nginx/html && \
+    chown -R appuser:appgroup /var/cache/nginx && \
+    chown -R appuser:appgroup /var/log/nginx && \
+    touch /run/nginx.pid && \
+    chown appuser:appgroup /run/nginx.pid
 
 USER appuser
 
-ENV NODE_ENV=production
-EXPOSE 3005
+EXPOSE 5005
 
-# Confirmed via package.json: main is server.js, and the original
-# "start": "nodemon server.js" script needed changing in package.json to
-# `node server.js` (keep "dev" as `nodemon server.js` for local dev).
-# CMD here invokes node directly regardless of what "start" says, since
-# npm itself is removed above.
-CMD ["node", "server.js"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

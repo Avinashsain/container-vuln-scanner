@@ -5,7 +5,7 @@ const Cart = require('../models/Cart');
 const router = express.Router();
 
 // Product Service URL
-const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3002';
+const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:5002';
 
 // Helper function to get product details
 const getProductDetails = async (productId) => {

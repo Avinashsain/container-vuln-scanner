@@ -58,16 +58,16 @@ services:
     container_name: user-service
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "5001:5001"
     environment:
-      - PORT=3001
+      - PORT=5001
       - NODE_ENV=production
       - MONGODB_URI=${mongodb_uri_users}
       - JWT_SECRET=${jwt_secret}
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -78,15 +78,15 @@ services:
     container_name: product-service
     restart: unless-stopped
     ports:
-      - "3002:3002"
+      - "5002:5002"
     environment:
-      - PORT=3002
+      - PORT=5002
       - NODE_ENV=production
       - MONGODB_URI=${mongodb_uri_products}
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3002/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5002/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -97,13 +97,13 @@ services:
     container_name: cart-service
     restart: unless-stopped
     ports:
-      - "3003:3003"
+      - "5003:5003"
     environment:
-      - PORT=3003
+      - PORT=5003
       - NODE_ENV=production
       - MONGODB_URI=${mongodb_uri_carts}
-      - PRODUCT_SERVICE_URL=http://product-service:3002
-      - USER_SERVICE_URL=http://user-service:3001
+      - PRODUCT_SERVICE_URL=http://product-service:5002
+      - USER_SERVICE_URL=http://user-service:5001
     depends_on:
       user-service:
         condition: service_healthy
@@ -112,7 +112,7 @@ services:
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3003/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5003/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -123,14 +123,14 @@ services:
     container_name: order-service
     restart: unless-stopped
     ports:
-      - "3004:3004"
+      - "5004:5004"
     environment:
-      - PORT=3004
+      - PORT=5004
       - NODE_ENV=production
       - MONGODB_URI=${mongodb_uri_orders}
-      - CART_SERVICE_URL=http://cart-service:3003
-      - PRODUCT_SERVICE_URL=http://product-service:3002
-      - USER_SERVICE_URL=http://user-service:3001
+      - CART_SERVICE_URL=http://cart-service:5003
+      - PRODUCT_SERVICE_URL=http://product-service:5002
+      - USER_SERVICE_URL=http://user-service:5001
     depends_on:
       cart-service:
         condition: service_healthy
@@ -139,7 +139,7 @@ services:
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3004/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5004/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -150,14 +150,14 @@ services:
     container_name: frontend-service
     restart: unless-stopped
     ports:
-      - "3005:3005"
+      - "5005:5005"
     environment:
-      - PORT=3005
+      - PORT=5005
       - NODE_ENV=production
-      - REACT_APP_USER_SERVICE_URL=http://$PUBLIC_IP:3001
-      - REACT_APP_PRODUCT_SERVICE_URL=http://$PUBLIC_IP:3002
-      - REACT_APP_CART_SERVICE_URL=http://$PUBLIC_IP:3003
-      - REACT_APP_ORDER_SERVICE_URL=http://$PUBLIC_IP:3004
+      - REACT_APP_USER_SERVICE_URL=http://$PUBLIC_IP:5001
+      - REACT_APP_PRODUCT_SERVICE_URL=http://$PUBLIC_IP:5002
+      - REACT_APP_CART_SERVICE_URL=http://$PUBLIC_IP:5003
+      - REACT_APP_ORDER_SERVICE_URL=http://$PUBLIC_IP:5004
     depends_on:
       user-service:
         condition: service_healthy
@@ -198,9 +198,9 @@ docker ps
 
 echo "======================================="
 echo " Bootstrap Complete!"
-echo " Frontend : http://$PUBLIC_IP:3005"
-echo " User API : http://$PUBLIC_IP:3001"
-echo " Product  : http://$PUBLIC_IP:3002"
-echo " Cart     : http://$PUBLIC_IP:3003"
-echo " Orders   : http://$PUBLIC_IP:3004"
+echo " Frontend : http://$PUBLIC_IP:5005"
+echo " User API : http://$PUBLIC_IP:5001"
+echo " Product  : http://$PUBLIC_IP:5002"
+echo " Cart     : http://$PUBLIC_IP:5003"
+echo " Orders   : http://$PUBLIC_IP:5004"
 echo "======================================="

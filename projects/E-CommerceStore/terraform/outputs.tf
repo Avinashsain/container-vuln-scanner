@@ -14,27 +14,27 @@ output "public_dns" {
 
 output "frontend_url" {
   description = "Frontend application URL"
-  value       = "http://${aws_instance.app.public_ip}:3005"
+  value       = "http://${aws_instance.app.public_ip}:5005"
 }
 
 output "user_service_url" {
   description = "User service URL"
-  value       = "http://${aws_instance.app.public_ip}:3001"
+  value       = "http://${aws_instance.app.public_ip}:5001"
 }
 
 output "product_service_url" {
   description = "Product service URL"
-  value       = "http://${aws_instance.app.public_ip}:3002"
+  value       = "http://${aws_instance.app.public_ip}:5002"
 }
 
 output "cart_service_url" {
   description = "Cart service URL"
-  value       = "http://${aws_instance.app.public_ip}:3003"
+  value       = "http://${aws_instance.app.public_ip}:5003"
 }
 
 output "order_service_url" {
   description = "Order service URL"
-  value       = "http://${aws_instance.app.public_ip}:3004"
+  value       = "http://${aws_instance.app.public_ip}:5004"
 }
 
 output "ssh_command" {
