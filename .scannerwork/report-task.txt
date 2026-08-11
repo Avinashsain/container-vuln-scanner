@@ -1,0 +1,6 @@
+projectKey=container-vuln-scanner
+serverUrl=http://localhost:9000
+serverVersion=26.8.0.126808
+dashboardUrl=http://localhost:9000/dashboard?id=container-vuln-scanner
+ceTaskId=1f217b27-5a73-405c-a1b6-71a504df5108
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1f217b27-5a73-405c-a1b6-71a504df5108

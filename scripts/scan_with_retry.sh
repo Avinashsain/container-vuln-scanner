@@ -1,6 +1,10 @@
 #!/bin/bash
 # scan_with_retry.sh - retries the scan on operational errors only
 IMAGE=$1
+if [ -z "$IMAGE" ]; then
+    echo "Usage: ./scripts/scan_with_retry.sh <image>"
+    exit 1
+fi
 MAX_RETRIES=3
 RETRY_DELAY=10   # seconds
 

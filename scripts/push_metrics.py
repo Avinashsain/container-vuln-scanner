@@ -55,4 +55,7 @@ def push(json_file):
         print(f"✅ Metrics pushed for {image} (HTTP {resp.status})")
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python3 scripts/push_metrics.py <trivy-json-report>")
+        sys.exit(1)
     push(sys.argv[1])

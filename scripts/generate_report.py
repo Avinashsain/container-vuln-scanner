@@ -109,4 +109,10 @@ def generate_html(json_file, html_file):
     print(f"✅ HTML report created: {output_path}")
 
 if __name__ == "__main__":
-    generate_html(sys.argv[1], sys.argv[2])
+    if len(sys.argv) not in (1, 3):
+        print(__doc__.strip())
+        sys.exit(1)
+
+    json_file = sys.argv[1] if len(sys.argv) > 1 else "reports/scan.json"
+    html_file = sys.argv[2] if len(sys.argv) > 2 else "reports/scan.html"
+    generate_html(json_file, html_file)
