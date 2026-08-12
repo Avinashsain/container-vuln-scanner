@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         PATH          = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
-        IMAGE_NAME    = "myapp:${BUILD_NUMBER}"
+        //IMAGE_NAME    = "myapp:${BUILD_NUMBER}"
+        IMAGE_NAME = "e-commercestore-cart-service:latest"
         FAIL_SEVERITY = "HIGH,CRITICAL"
     }
 
