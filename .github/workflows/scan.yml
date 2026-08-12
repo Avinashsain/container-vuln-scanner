@@ -49,22 +49,5 @@ jobs:
           name: vulnerability-report
           path: scan-report.json
 
-      # The SonarQube server requires Java 21+ for the scanner engine itself.
-      # skipJreProvisioning (below) skips the scanner's own JRE auto-download,
-      # since that download goes through the ngrok tunnel and was
-      # timing out/resetting mid-download — so we provide Java 21 here instead.
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      # SONAR_HOST_URL must point at a SonarQube reachable from GitHub's cloud
-      # runners — a container only published on localhost will NOT work here.
-      # Currently tunneled via ngrok (URL stored in secrets, not hardcoded).
-      - name: Code quality (SonarQube)
-        uses: sonarsource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: -Dsonar.scanner.skipJreProvisioning=true
+      # Code quality is handled by SonarCloud's Automatic Analysis, which
+      # scans every push on its own — no scanner step needed here.

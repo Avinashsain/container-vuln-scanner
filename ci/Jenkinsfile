@@ -36,23 +36,8 @@ pipeline {
             }
         }
 
-        stage('Code Quality (SonarQube)') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv('sonarqube-server') {   // name must match Manage Jenkins → System → SonarQube servers
-                        sh 'sonar-scanner -Dsonar.host.url=https://eclair-account-chest.ngrok-free.dev -Dsonar.token=$SONAR_TOKEN'
-                    }
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // Code quality is handled by SonarCloud's Automatic Analysis, which
+        // scans every push on its own — no scanner stage needed here.
 
         stage('Push to Registry') {
             steps {
