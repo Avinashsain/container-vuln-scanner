@@ -29,7 +29,7 @@ for IMG in "${IMAGES[@]}"; do
 done
 
 if [[ -n "${SLACK_WEBHOOK_URL:-}" ]]; then
-    python3 "${REPO_ROOT}/notifications/slack_notify.py" "${REPORT_FILES[@]}"
+    python3 notifications/slack_notify.py "${REPORT_FILES[@]}"
 else
     echo "⏭️  Slack skipped (SLACK_WEBHOOK_URL not set)"
 fi

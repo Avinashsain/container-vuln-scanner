@@ -62,6 +62,47 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
 
+  # --- Vulnerability dashboard app (separate from the SonarQube stack above) ---
+  postgres:
+    image: postgres:15
+    container_name: vulnscanner_postgres
+    environment:
+      - POSTGRES_USER=vulnscanner
+      - POSTGRES_PASSWORD=vulnscanner
+      - POSTGRES_DB=vulnscanner
+    ports:
+      - "5433:5432"
+    volumes:
+      - vulnscanner_postgres_data:/var/lib/postgresql/data
+
+  server:
+    build: ./server
+    container_name: vulnscanner_server
+    depends_on:
+      - postgres
+    env_file:
+      - ./server/.env
+    environment:
+      - DATABASE_URL=postgresql://vulnscanner:vulnscanner@postgres:5432/vulnscanner
+      - REPO_ROOT=/app
+      - REPORTS_DIR=/app/reports
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./reports:/app/reports
+      - ./configs:/app/configs
+      - ./.trivyignore:/app/.trivyignore
+      - /var/run/docker.sock:/var/run/docker.sock
+      - trivy_cache:/root/.cache/trivy
+
+  web:
+    build: ./web
+    container_name: vulnscanner_web
+    depends_on:
+      - server
+    ports:
+      - "8080:80"
+
 volumes:
   prometheus_data:
   grafana_data:
@@ -70,3 +111,5 @@ volumes:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
+  vulnscanner_postgres_data:
+  trivy_cache:

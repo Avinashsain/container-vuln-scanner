@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+enum ScanStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  UNKNOWN
+}
+
+enum ReportFormat {
+  JSON
+  HTML
+  PDF
+  CSV
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(VIEWER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Image {
+  id                  String    @id @default(cuid())
+  repository          String
+  name                String
+  tag                 String
+  imageId             String?
+  registry            String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  // Automatic rescans: null/0 disables scheduling for this image.
+  scanIntervalMinutes Int?
+  lastAutoScanAt      DateTime?
+  scans               Scan[]
+
+  @@unique([repository, name, tag])
+}
+
+model Scan {
+  id              String          @id @default(cuid())
+  imageId         String
+  image           Image           @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  status          ScanStatus      @default(RUNNING)
+  scannerVersion  String?
+  progress        Int             @default(0)
+  stage           String?
+  errorMessage    String?
+  startedAt       DateTime        @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime        @default(now())
+  criticalCount   Int             @default(0)
+  highCount       Int             @default(0)
+  mediumCount     Int             @default(0)
+  lowCount        Int             @default(0)
+  unknownCount    Int             @default(0)
+  vulnerabilities Vulnerability[]
+  reports         Report[]
+
+  @@index([imageId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+model Vulnerability {
+  id                String   @id @default(cuid())
+  scanId            String
+  scan              Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  vulnerabilityId   String
+  packageName       String
+  installedVersion  String
+  fixedVersion      String?
+  severity          Severity
+  cvss              Float?
+  title             String?
+  description       String?
+  status            String?
+  createdAt         DateTime @default(now())
+
+  @@index([scanId])
+  @@index([severity])
+  @@index([vulnerabilityId])
+}
+
+model Report {
+  id        String       @id @default(cuid())
+  scanId    String
+  scan      Scan         @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  format    ReportFormat
+  path      String
+  createdAt DateTime     @default(now())
+
+  @@index([scanId])
+}
