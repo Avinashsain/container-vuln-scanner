@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { adminRouter } from "./routes/admin.routes";
 import { authRouter } from "./routes/auth.routes";
 import { dashboardRouter } from "./routes/dashboard.routes";
 import { imagesRouter } from "./routes/images.routes";
@@ -27,6 +28,7 @@ export function createApp() {
   app.use("/api/scans", scansRouter);
   app.use("/api/vulnerabilities", vulnerabilitiesRouter);
   app.use("/api/reports", reportsRouter);
+  app.use("/api/admin", adminRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -35,14 +35,18 @@ fi
 trivy image --format json --output "$REPORT_FILE" "$IMAGE"
 echo "📄 Report saved: $REPORT_FILE"
 
-# 2) Slack alert with the severity breakdown from the report
+# 2) Grafana metrics
+python3 scripts/push_metrics.py "$REPORT_FILE"
+echo "📊 Metrics pushed to Grafana"
+
+# 3) Slack alert with the severity breakdown from the report
 if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
     python3 notifications/slack_notify.py "$REPORT_FILE"
 else
     echo "⏭️  Slack skipped (SLACK_WEBHOOK_URL not set)"
 fi
 
-# 3) Now run the gate check — this exits non-zero on violations
+# 4) Now run the gate check — this exits non-zero on violations
 trivy image --exit-code 1 --severity "$FAIL_ON_SEVERITY" $EXTRA_FLAGS "$IMAGE"
 
 echo "✅ Image passed the security gate!"
