@@ -101,7 +101,7 @@ services:
     depends_on:
       - server
     ports:
-      - "8080:80"
+      - "8181:80"
 
 volumes:
   prometheus_data:

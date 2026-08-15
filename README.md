@@ -142,6 +142,7 @@ This scanner was validated against **11 real images**, including microservices f
 | [docs/ci-cd.md](docs/ci-cd.md) | Jenkins & GitHub Actions integration (incl. webhook setup) |
 | [docs/aws-deployment.md](docs/aws-deployment.md) | Cloud deployment on AWS EC2 (Free Tier) |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Real errors faced & their fixes |
+| [docs/dashboard.md](docs/dashboard.md) | Web dashboard (auth, live scanning, charts, reports) — structure, env vars, API, testing |
 
 ## Cost Optimization
 
