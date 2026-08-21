@@ -32,35 +32,35 @@ services:
       - ./configs/grafana/provisioning:/etc/grafana/provisioning
       - ./dashboards:/var/lib/grafana/dashboards
 
-  sonarqube_db:
-    image: postgres:15
-    container_name: sonarqube_db
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-      - POSTGRES_DB=sonar
-    volumes:
-      - sonarqube_db_data:/var/lib/postgresql/data
+  # sonarqube_db:
+  #   image: postgres:15
+  #   container_name: sonarqube_db
+  #   environment:
+  #     - POSTGRES_USER=sonar
+  #     - POSTGRES_PASSWORD=sonar
+  #     - POSTGRES_DB=sonar
+  #   volumes:
+  #     - sonarqube_db_data:/var/lib/postgresql/data
 
-  sonarqube:
-    image: sonarqube:26.8.0.126808-community
-    container_name: sonarqube
-    depends_on:
-      - sonarqube_db
-    environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube_db:5432/sonar
-      - SONAR_JDBC_USERNAME=sonar
-      - SONAR_JDBC_PASSWORD=sonar
-    ports:
-      - "9000:9000"
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_logs:/opt/sonarqube/logs
+  # sonarqube:
+  #   image: sonarqube:26.8.0.126808-community
+  #   container_name: sonarqube
+  #   depends_on:
+  #     - sonarqube_db
+  #   environment:
+  #     - SONAR_JDBC_URL=jdbc:postgresql://sonarqube_db:5432/sonar
+  #     - SONAR_JDBC_USERNAME=sonar
+  #     - SONAR_JDBC_PASSWORD=sonar
+  #   ports:
+  #     - "9000:9000"
+  #   ulimits:
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   volumes:
+  #     - sonarqube_data:/opt/sonarqube/data
+  #     - sonarqube_extensions:/opt/sonarqube/extensions
+  #     - sonarqube_logs:/opt/sonarqube/logs
 
   # --- Vulnerability dashboard app (separate from the SonarQube stack above) ---
   postgres:
@@ -107,9 +107,9 @@ volumes:
   prometheus_data:
   grafana_data:
   pushgateway_data:
-  sonarqube_db_data:
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_logs:
+  #sonarqube_db_data:
+  #sonarqube_data:
+  #sonarqube_extensions:
+  #sonarqube_logs:
   vulnscanner_postgres_data:
   trivy_cache:

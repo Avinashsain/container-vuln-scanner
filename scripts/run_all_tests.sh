@@ -7,8 +7,8 @@
 cd "$(dirname "$0")/.."      # project root se chalao
 source configs/scanner-config.env
 
-# Aapki saari images ek jagah — yahan add/remove kar sakte ho
-IMAGES=(
+# Default images — jab user kuch bhi input na de to yeh use hongi
+DEFAULT_IMAGES=(
   "blue-green-deployment-backend:latest"
   "blue-green-deployment-frontend-blue:latest"
   "blue-green-deployment-frontend-green:latest"
@@ -22,10 +22,31 @@ IMAGES=(
   "e-commercestore-order-service:latest"
   "e-commercestore-product-service:latest"
   "e-commercestore-user-service:latest"
-  #"myapp:latest"
-  #"python:3.4-alpine"        # deliberately old — FAIL dikhane ke liye
-  "alpine:latest"            # clean — PASS dikhane ke liye
+  "alpine:latest"
 )
+
+# Image input le lo — 3 tareeke se:
+#   1. CLI args:      ./scripts/run_all_tests.sh img1:tag img2:tag
+#   2. Interactive:    ./scripts/run_all_tests.sh   (phir prompt par single ya multiple image daalo)
+#   3. Blank/Enter:    default list use hogi (upar wali)
+if [ $# -gt 0 ]; then
+    IMAGES=("$@")
+else
+    echo "════════════════════════════════════════════"
+    echo "  IMAGE INPUT"
+    echo "════════════════════════════════════════════"
+    echo "Ek image daalo ya multiple images space/comma se separate karke."
+    echo "Khali chhod ke Enter dabao to default ${#DEFAULT_IMAGES[@]} images scan hongi."
+    read -rp "Image(s): " USER_INPUT
+
+    if [ -z "$USER_INPUT" ]; then
+        IMAGES=("${DEFAULT_IMAGES[@]}")
+    else
+        # Comma ko space mein convert karo, phir words mein split karo
+        USER_INPUT=$(printf '%s' "$USER_INPUT" | tr ',' ' ')
+        read -ra IMAGES <<< "$USER_INPUT"
+    fi
+fi
 
 PASS_COUNT=0
 FAIL_COUNT=0
